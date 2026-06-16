@@ -1,11 +1,14 @@
 const countdown = document.querySelector("[data-countdown]");
 
 const introGate = document.querySelector(".intro-gate");
-const introEnter = document.querySelector(".intro-enter");
+const introSlider = document.querySelector(".intro-slider");
+const introSliderTrack = document.querySelector(".intro-slider-track");
+const introMatch = document.querySelector(".intro-match");
 const introVideo = document.querySelector(".intro-video");
 const bgMusic = document.querySelector(".bg-music");
 const musicToggle = document.querySelector(".music-toggle");
 let introStarted = false;
+let introDragging = false;
 let shouldResumeMusicAfterVideo = false;
 let activeMusicPausingVideo = null;
 
@@ -43,23 +46,94 @@ function resumeMusicAfterVideo(video) {
 
 introVideo?.play?.().catch(() => {});
 
-introEnter?.addEventListener("click", () => {
+function setIntroSliderProgress(progress) {
+  if (!introSlider || !introSliderTrack || !introMatch) return;
+  const max = Math.max(0, introSliderTrack.clientWidth - introMatch.offsetWidth - 24);
+  const value = Math.max(0, Math.min(progress, max));
+  const percent = max ? Math.round((value / max) * 100) : 0;
+
+  introSlider.style.setProperty("--slider-progress", `${value}px`);
+  introSlider.style.setProperty("--slider-max", `${max}px`);
+  introSlider.setAttribute("aria-valuenow", String(percent));
+}
+
+function completeIntroSlider() {
   if (introStarted || !introGate || !introVideo) return;
   introStarted = true;
+  introDragging = false;
 
+  setIntroSliderProgress(introSliderTrack.clientWidth);
+  introSlider?.classList.remove("is-dragging");
+  introSlider?.classList.add("is-complete");
   introGate.classList.add("is-igniting", "is-loading-igniting");
 
   window.setTimeout(() => {
     introGate.classList.remove("is-loading-igniting");
-    introGate.classList.add("is-inking", "is-hidden");
+    introGate.classList.add("is-transitioning", "is-lantern-rise", "is-inking");
+  }, 2000);
+
+  window.setTimeout(() => {
     document.body.classList.remove("is-intro-open");
     playBackgroundMusic();
+  }, 2450);
+
+  window.setTimeout(() => {
+    introGate.classList.add("is-hidden");
     window.setTimeout(() => {
       introGate.hidden = true;
       introVideo.pause();
     }, 500);
-  }, 2000);
+  }, 3650);
+}
+
+function updateIntroDrag(clientX) {
+  if (!introSliderTrack || !introMatch) return;
+  const rect = introSliderTrack.getBoundingClientRect();
+  const max = Math.max(0, introSliderTrack.clientWidth - introMatch.offsetWidth - 24);
+  const progress = clientX - rect.left - introMatch.offsetWidth / 2;
+  setIntroSliderProgress(progress);
+
+  if (max && progress >= max * 0.92) {
+    completeIntroSlider();
+  }
+}
+
+introMatch?.addEventListener("pointerdown", (event) => {
+  if (introStarted) return;
+  introDragging = true;
+  introSlider?.classList.add("is-dragging");
+  introMatch.setPointerCapture?.(event.pointerId);
+  updateIntroDrag(event.clientX);
 });
+
+introMatch?.addEventListener("pointermove", (event) => {
+  if (!introDragging || introStarted) return;
+  updateIntroDrag(event.clientX);
+});
+
+function stopIntroDrag() {
+  if (!introDragging || introStarted) return;
+  introDragging = false;
+  introSlider?.classList.remove("is-dragging");
+  setIntroSliderProgress(0);
+}
+
+introMatch?.addEventListener("pointerup", stopIntroDrag);
+introMatch?.addEventListener("pointercancel", stopIntroDrag);
+
+introSlider?.addEventListener("keydown", (event) => {
+  if (introStarted) return;
+  if (event.key === "Enter" || event.key === " ") {
+    event.preventDefault();
+    completeIntroSlider();
+  }
+});
+
+window.addEventListener("resize", () => {
+  if (!introStarted) setIntroSliderProgress(0);
+});
+
+setIntroSliderProgress(0);
 
 function updateCountdown() {
   if (!countdown) return;
