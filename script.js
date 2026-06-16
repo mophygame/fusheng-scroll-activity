@@ -156,14 +156,60 @@ function updateCountdown() {
 updateCountdown();
 setInterval(updateCountdown, 1000);
 
-document.querySelectorAll(".character-card").forEach((card) => {
+const characterGrid = document.querySelector(".character-grid");
+const characterCards = document.querySelectorAll(".character-card");
+const characterSliderButtons = document.querySelectorAll(".character-slider button");
+
+function setActiveCharacter(card) {
+  characterCards.forEach((item, index) => {
+    const isCurrent = item === card;
+    item.classList.toggle("is-active", isCurrent);
+    item.setAttribute("aria-pressed", String(isCurrent));
+    item.querySelector(".card-action").textContent = isCurrent ? "已解封" : "揭開殘片";
+    characterSliderButtons[index]?.classList.toggle("is-active", isCurrent);
+  });
+}
+
+characterCards.forEach((card) => {
   card.addEventListener("click", () => {
-    document.querySelectorAll(".character-card").forEach((item) => {
-      const isCurrent = item === card;
-      item.classList.toggle("is-active", isCurrent);
-      item.setAttribute("aria-pressed", String(isCurrent));
-      item.querySelector(".card-action").textContent = isCurrent ? "已解封" : "揭開殘片";
+    setActiveCharacter(card);
+  });
+});
+
+characterSliderButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    const index = Number(button.dataset.slide);
+    const card = characterCards[index];
+    if (!card) return;
+
+    card.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+    setActiveCharacter(card);
+  });
+});
+
+let characterScrollTicking = false;
+characterGrid?.addEventListener("scroll", () => {
+  if (characterScrollTicking || window.matchMedia("(min-width: 1001px)").matches) return;
+  characterScrollTicking = true;
+
+  window.requestAnimationFrame(() => {
+    const gridRect = characterGrid.getBoundingClientRect();
+    const gridCenter = gridRect.left + gridRect.width / 2;
+    let closestCard = characterCards[0];
+    let closestDistance = Infinity;
+
+    characterCards.forEach((card) => {
+      const rect = card.getBoundingClientRect();
+      const cardCenter = rect.left + rect.width / 2;
+      const distance = Math.abs(cardCenter - gridCenter);
+      if (distance < closestDistance) {
+        closestDistance = distance;
+        closestCard = card;
+      }
     });
+
+    if (closestCard) setActiveCharacter(closestCard);
+    characterScrollTicking = false;
   });
 });
 
@@ -204,6 +250,9 @@ bgMusic?.addEventListener("pause", () => setMusicState(false));
 const memoryPlayer = document.querySelector(".bgvideo-player");
 const memoryVideo = document.querySelector(".bgvideo-media");
 const memoryPlay = document.querySelector(".bgvideo-play");
+const fateWindowPlayer = document.querySelector(".fate-window-video");
+const fateWindowVideo = document.querySelector(".fate-window-media");
+const fateWindowPlay = document.querySelector(".fate-window-play");
 
 memoryPlay?.addEventListener("click", () => {
   memoryVideo?.play?.();
@@ -222,6 +271,22 @@ memoryVideo?.addEventListener("pause", () => {
 memoryVideo?.addEventListener("ended", () => {
   memoryPlayer?.classList.remove("is-playing");
   resumeMusicAfterVideo(memoryVideo);
+});
+
+fateWindowPlay?.addEventListener("click", () => {
+  fateWindowVideo?.play?.();
+});
+
+fateWindowVideo?.addEventListener("play", () => {
+  fateWindowPlayer?.classList.add("is-playing");
+});
+
+fateWindowVideo?.addEventListener("pause", () => {
+  fateWindowPlayer?.classList.remove("is-playing");
+});
+
+fateWindowVideo?.addEventListener("ended", () => {
+  fateWindowPlayer?.classList.remove("is-playing");
 });
 
 document.querySelectorAll("video").forEach((video) => {
