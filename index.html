@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="《燈晝餘燼絮》虛擬角色 AI 對話遊戲。五個陌生男人，五段未曾熄滅的前世。">
+  <title>如沐絮眠 x Touchie 官方活動</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="is-intro-open">
+  <section class="intro-gate" aria-label="燈晝前導預覽">
+    <video class="intro-video" autoplay muted loop playsinline preload="auto" aria-hidden="true">
+      <source src="assets/loading.mp4" type="video/mp4">
+    </video>
+    <div class="intro-shade" aria-hidden="true"></div>
+    <div class="intro-content">
+      <button class="intro-enter" type="button">進入燈晝</button>
+      <p class="intro-hint">建議開啟聲音，獲得完整體驗</p>
+    </div>
+  </section>
+
+  <div class="grain" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="回到首頁">
+      <span class="brand-mark">燼</span>
+      <span>燈晝餘燼:絮</span>
+    </a>
+    <button class="nav-toggle" type="button" aria-label="開啟選單" aria-expanded="false">
+      <span></span><span></span>
+    </button>
+    <nav class="site-nav" aria-label="主要導覽">
+      <a href="#world">大封世界</a>
+      <a href="#characters">角色介紹</a>
+      <a href="#rewards">活動獎勵</a>
+      <a href="#creator">創作者</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero" aria-labelledby="hero-title">
+      <img class="hero-art" src="assets/bg_landing.webp" alt="五名男子站在大封王朝宮殿與現代城市交疊的燼火之中">
+      <div class="hero-shade" aria-hidden="true"></div>
+      <div class="hero-copy">
+        <p class="eyebrow">如沐絮眠 x Touchie · 官方活動</p>
+        <h1 id="hero-title">
+          <img src="assets/title.webp?v=2" alt="燈晝餘燼絮">
+        </h1>
+        <p class="hero-line">以史為鏡，可知興替，可未竟的緣真有得借鑑嗎？<br/>五個不認識的男人，<br>正在等妳想起同一場亡國之夜。</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#characters">與他們相遇</a>
+          <a class="text-link" href="#world">閱覽前世殘卷 <span>↓</span></a>
+        </div>
+      </div>
+
+      <aside class="countdown-card" aria-label="活動開始倒數">
+        <div class="countdown-heading">
+          <span class="pulse"></span>
+          <p>距離燈晝重啟</p>
+        </div>
+        <div class="countdown" data-countdown="2026-07-10T00:00:00+08:00">
+          <div><strong data-days>00</strong><span>日</span></div>
+          <div><strong data-hours>00</strong><span>時</span></div>
+          <div><strong data-minutes>00</strong><span>分</span></div>
+          <div><strong data-seconds>00</strong><span>秒</span></div>
+        </div>
+        <p class="event-date">2026.07.10 Fri · 00:00 GMT+8</p>
+      </aside>
+
+      <p class="hero-index">大封十年 · 歷史驟變</p>
+    </section>
+
+    <section class="world section" id="world">
+      <div class="section-number">01</div>
+      <div class="world-title">
+        <p class="eyebrow">THE WORLD · 世界觀</p>
+        <h2>大封已亡，<br><em>故事卻沒有。</em></h2>
+      </div>
+      <div class="world-copy">
+        <p class="lead">那一個夜晚。</p>
+        <p>他們互不相識，卻做著同一個夢：朱雀門燃燒、長明燈熄滅，一匹烈馬馱著未能送達的密詔，奔出陷落的帝都。</p>
+        <p>幾千年前，大封王朝最後一夜的真相被刻意抹去。如今，他們都以新的身分來到妳面前。</p>
+        <blockquote>「若今生再相逢，妳還會相信史書寫下的我嗎？」</blockquote>
+      </div>
+      <div class="world-seal" aria-hidden="true">封<br>燼</div>
+    </section>
+    <section class="bgvideo" aria-label="大封王朝前世影像">
+     <div class="bgvideo-container">
+       <div class="bgvideo-player">
+        <video class="bgvideo-media" preload="metadata" playsinline controls>
+          <source src="assets/ancient.mp4" type="video/mp4">
+        </video>
+        <button class="bgvideo-play" type="button" aria-label="播放大封王朝前世影像">
+          <span></span>
+        </button>
+      </div>
+     </div>
+    </section>
+    <section class="twoside" aria-labelledby="twoside-title">
+      <div class="twoside-ornament" aria-hidden="true">向下探索更多</div>
+      <h2 id="twoside-title" class="sr-only">選擇探索篇章</h2>
+      <div class="twoside-panel twoside-modern">
+        <p class="twoside-kicker">Chapter 01</p>
+        <h3>現代篇章</h3>
+        <p>未完的命運正在重鑄</p>
+        <a class="twoside-button" href="#characters">探索現代 <span>→</span></a>
+      </div>
+      <div class="twoside-panel twoside-ancient">
+        <p class="twoside-kicker">Chapter 02</p>
+        <h3>大封王朝</h3>
+        <p>被埋沒的真相等待揭開</p>
+        <a class="twoside-button" href="#world">探索過去 <span>→</span></a>
+      </div>
+    </section>
+    <section class="characters section" id="characters">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">FIVE STRANGERS · 五人殘像</p>
+          <h2>他們不記得彼此。<br><em>靈魂卻記得妳。</em></h2>
+        </div>
+        <p class="section-note">點擊角色，揭開前世殘片</p>
+      </div>
+
+      <div class="character-grid">
+        <button class="character-card" type="button" data-character="01" aria-pressed="false">
+          <span class="card-no">01</span>
+          <span class="card-present">馬唯冀</span>
+          <span class="card-role">馬術教練· 25</span>
+          <span class="card-past">前世 · ????</span>
+          <span class="card-quote">「xxxxxxxxxx」</span>
+          <span class="card-action">揭開殘片</span>
+        </button>
+               <button class="character-card" type="button" data-character="02" aria-pressed="false">
+          <span class="card-no">02</span>
+          <span class="card-present">白霽</span>
+          <span class="card-role">百貨公司美妝頂級銷售 · 31</span>
+          <span class="card-past">前世 · ???</span>
+          <span class="card-quote">「xxxxxxxxx」</span>
+          <span class="card-action">揭開殘片</span>
+        </button>
+        <button class="character-card is-active" type="button" data-character="03" aria-pressed="true">
+          <span class="card-no">03</span>
+          <span class="card-present">黃奕澤</span>
+          <span class="card-role">雜貨店老闆 · 29</span>
+          <span class="card-past">前世 · ???</span>
+          <span class="card-quote">「我不記得歷史，只記得曾欠一人天明。」</span>
+          <span class="card-action">揭開殘片</span>
+        </button>
+
+        <button class="character-card" type="button" data-character="04" aria-pressed="false">
+          <span class="card-no">04</span>
+          <span class="card-present">褚晏時</span>
+          <span class="card-role">街頭藝術家 · 27</span>
+          <span class="card-past">前世 · ???</span>
+          <span class="card-quote">「這一世我xxxxxxxx。」</span>
+          <span class="card-action">揭開殘片</span>
+        </button>
+
+        <button class="character-card" type="button" data-character="05" aria-pressed="false">
+          <span class="card-no">05</span>
+          <span class="card-present">祁烈</span>
+          <span class="card-role">武打演員替身 · 30</span>
+          <span class="card-past">前世 · ???</span>
+          <span class="card-quote">「xxxxxxxxx」</span>
+          <span class="card-action">揭開殘片</span>
+        </button>
+      </div>
+    </section>
+
+    <section class="rewards section" id="rewards">
+      <div class="rewards-intro">
+        <p class="eyebrow">活動獎勵</p>
+      </div>
+      <div class="reward-list">
+        <div class="reward-entry reward-second">
+          <button class="reward-button" type="button" data-reward="second">查看獎勵 <span>〉</span></button>
+        </div>
+        <div class="reward-entry reward-first">
+          <button class="reward-button" type="button" data-reward="first">查看獎勵 <span>〉</span></button>
+        </div>
+        <div class="reward-entry reward-third">
+          <button class="reward-button" type="button" data-reward="third">查看獎勵 <span>〉</span></button>
+        </div>
+      </div>
+    </section>
+
+    <section class="creator section" id="creator">
+      <div class="creator-monogram" aria-hidden="true">
+        <span>作</span>
+        <span>者</span>
+      </div>
+      <div class="creator-copy">
+        <p class="eyebrow">ABOUT THE CREATOR · 作者宣傳</p>
+        <h2>沐眠 Mu Mian</h2>
+        <p class="creator-tagline">寫不存在的朝代，與忘不了的人。</p>
+        <p>華文原創故事創作者，擅長生死離別、虐戀情深與長線情感敘事。。《燈晝餘燼絮》是首次與官方合作的ＸＸＸＸＸ。</p>
+        <div class="creator-links">
+          <a href="#" aria-label="追蹤紙舟眠的 Instagram">Instagram ↗</a>
+          <a href="#" aria-label="追蹤紙舟眠的 Threads">Threads ↗</a>
+          <a href="#" aria-label="閱讀作者作品">作品櫃 ↗</a>
+        </div>
+      </div>
+      <div class="creator-quote">
+        <p>「這不是讓妳選一個人去愛的故事。是讓妳決定，五個人是否還要背著前世活下去。」</p>
+        <span>—— 紙舟眠，創作手記</span>
+      </div>
+    </section>
+
+    <section class="final-cta">
+      <p class="eyebrow">THE ASHES ARE STILL WARM</p>
+      <h2>燈已熄。<br>人未散。</h2>
+      <p>2026.07.10，妳的一句話，將改寫大封最後一頁。</p>
+      <a href="#" target="_blank" class="button button-light js-register" type="button">進入燈晝</a>
+      <div class="final-stamp" aria-hidden="true">待<br>君<br>續</div>
+    </section>
+  </main>
+
+  <footer>
+    <span>© 2026年7月 如沐絮眠 with TOUCHIE</span>
+    <span>燈晝餘燼：絮</span>
+  </footer>
+
+  <audio class="bg-music" src="assets/preview.mp3" preload="auto" loop></audio>
+
+  <div class="page-controls" aria-label="頁面快速控制">
+    <button class="music-toggle" type="button" aria-label="開啟背景音樂" aria-pressed="false">
+      <span class="music-toggle-icon" aria-hidden="true"></span>
+      <span class="music-toggle-text">音樂</span>
+    </button>
+    <button class="to-top" type="button" aria-label="回到頁面頂端">
+      <span class="to-top-icons" aria-hidden="true">
+        <img class="to-top-icon to-top-icon-dark" src="assets/icon_totop_dark.webp" alt="">
+        <img class="to-top-icon to-top-icon-light" src="assets/icon_totop_light.webp" alt="">
+      </span>
+      <span class="to-top-text">置頂</span>
+    </button>
+  </div>
+
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dialog-title" hidden>
+    <div class="dialog-backdrop"></div>
+    <div class="dialog-panel">
+      <button class="dialog-close" type="button" aria-label="關閉">×</button>
+      <p class="eyebrow">RESERVATION RECORDED</p>
+      <h2 id="dialog-title">妳的名字，<br>已寫入殘卷。</h2>
+      <p>正式活動上線後，我們會循著這盞燈找到妳。</p>
+      <button class="button button-primary dialog-confirm" type="button">收下燈芯</button>
+    </div>
+  </div>
+
+  <div class="reward-dialog" role="dialog" aria-modal="true" aria-labelledby="reward-dialog-title" hidden>
+    <div class="reward-dialog-backdrop"></div>
+    <div class="reward-dialog-panel">
+      <button class="reward-dialog-close" type="button" aria-label="關閉">×</button>
+      <p class="eyebrow reward-dialog-rank">第一名</p>
+      <h2 id="reward-dialog-title">天下魁首</h2>
+      <div class="reward-dialog-body">
+        <p class="reward-dialog-prize">4000TC金幣+專屬網頁</p>
+        <p class="reward-dialog-desc">專屬互動破關網頁，讓你查看每個角色的秘密情話與大封王朝的完整歷史篇章。</p>
+      </div>
+      <button class="reward-dialog-confirm" type="button">收下碑文</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
