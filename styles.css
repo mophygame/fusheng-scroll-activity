@@ -354,24 +354,11 @@ button {
   animation-delay: var(--lantern-delay, 0ms);
 }
 
-.intro-float-lantern:nth-child(1) { --lantern-left: 5%; --lantern-size: 30px; --lantern-bottom: -84px; --lantern-delay: 0ms; --lantern-duration: 3000ms; --lantern-sway-duration: 1700ms; --lantern-drift: 18px; --lantern-rise: -48vh; --lantern-scale: 1.02; --lantern-sway: -14px; --lantern-tilt: -5deg; }
-.intro-float-lantern:nth-child(2) { --lantern-left: 11%; --lantern-size: 42px; --lantern-bottom: -112px; --lantern-delay: 120ms; --lantern-duration: 3350ms; --lantern-sway-duration: 2100ms; --lantern-drift: -24px; --lantern-rise: -67vh; --lantern-scale: 1.18; --lantern-sway: 18px; --lantern-tilt: 6deg; }
-.intro-float-lantern:nth-child(3) { --lantern-left: 18%; --lantern-size: 34px; --lantern-bottom: -64px; --lantern-delay: 260ms; --lantern-duration: 2880ms; --lantern-sway-duration: 1850ms; --lantern-drift: 12px; --lantern-rise: -42vh; --lantern-scale: 0.96; --lantern-sway: -20px; --lantern-tilt: -7deg; }
-.intro-float-lantern:nth-child(4) { --lantern-left: 25%; --lantern-size: 56px; --lantern-bottom: -128px; --lantern-delay: 60ms; --lantern-duration: 3650ms; --lantern-sway-duration: 2300ms; --lantern-drift: 34px; --lantern-rise: -76vh; --lantern-scale: 1.24; --lantern-sway: 16px; --lantern-tilt: 5deg; }
-.intro-float-lantern:nth-child(5) { --lantern-left: 32%; --lantern-size: 38px; --lantern-bottom: -90px; --lantern-delay: 210ms; --lantern-duration: 3200ms; --lantern-sway-duration: 1950ms; --lantern-drift: -18px; --lantern-rise: -58vh; --lantern-scale: 1.08; --lantern-sway: 22px; --lantern-tilt: -6deg; }
-.intro-float-lantern:nth-child(6) { --lantern-left: 39%; --lantern-size: 48px; --lantern-bottom: -118px; --lantern-delay: 320ms; --lantern-duration: 3480ms; --lantern-sway-duration: 2400ms; --lantern-drift: 20px; --lantern-rise: -70vh; --lantern-scale: 1.16; --lantern-sway: -24px; --lantern-tilt: 6deg; }
-.intro-float-lantern:nth-child(7) { --lantern-left: 46%; --lantern-size: 32px; --lantern-bottom: -72px; --lantern-delay: 90ms; --lantern-duration: 2820ms; --lantern-sway-duration: 1650ms; --lantern-drift: -12px; --lantern-rise: -45vh; --lantern-scale: 0.94; --lantern-sway: 12px; --lantern-tilt: 4deg; }
-.intro-float-lantern:nth-child(8) { --lantern-left: 53%; --lantern-size: 60px; --lantern-bottom: -142px; --lantern-delay: 240ms; --lantern-duration: 3820ms; --lantern-sway-duration: 2500ms; --lantern-drift: -34px; --lantern-rise: -82vh; --lantern-scale: 1.26; --lantern-sway: -18px; --lantern-tilt: -5deg; }
-.intro-float-lantern:nth-child(9) { --lantern-left: 60%; --lantern-size: 36px; --lantern-bottom: -82px; --lantern-delay: 390ms; --lantern-duration: 3040ms; --lantern-sway-duration: 1800ms; --lantern-drift: 16px; --lantern-rise: -50vh; --lantern-scale: 1.02; --lantern-sway: 20px; --lantern-tilt: 7deg; }
-.intro-float-lantern:nth-child(10) { --lantern-left: 67%; --lantern-size: 44px; --lantern-bottom: -106px; --lantern-delay: 40ms; --lantern-duration: 3320ms; --lantern-sway-duration: 2200ms; --lantern-drift: -22px; --lantern-rise: -63vh; --lantern-scale: 1.12; --lantern-sway: -16px; --lantern-tilt: -5deg; }
-.intro-float-lantern:nth-child(11) { --lantern-left: 73%; --lantern-size: 31px; --lantern-bottom: -58px; --lantern-delay: 180ms; --lantern-duration: 2760ms; --lantern-sway-duration: 1600ms; --lantern-drift: 10px; --lantern-rise: -40vh; --lantern-scale: 0.9; --lantern-sway: 14px; --lantern-tilt: 6deg; }
-.intro-float-lantern:nth-child(12) { --lantern-left: 80%; --lantern-size: 54px; --lantern-bottom: -132px; --lantern-delay: 300ms; --lantern-duration: 3700ms; --lantern-sway-duration: 2350ms; --lantern-drift: 28px; --lantern-rise: -78vh; --lantern-scale: 1.22; --lantern-sway: -22px; --lantern-tilt: -7deg; }
-.intro-float-lantern:nth-child(13) { --lantern-left: 87%; --lantern-size: 40px; --lantern-bottom: -94px; --lantern-delay: 430ms; --lantern-duration: 3180ms; --lantern-sway-duration: 2050ms; --lantern-drift: -16px; --lantern-rise: -56vh; --lantern-scale: 1.06; --lantern-sway: 18px; --lantern-tilt: 5deg; }
-.intro-float-lantern:nth-child(14) { --lantern-left: 94%; --lantern-size: 33px; --lantern-bottom: -74px; --lantern-delay: 150ms; --lantern-duration: 2940ms; --lantern-sway-duration: 1750ms; --lantern-drift: -30px; --lantern-rise: -46vh; --lantern-scale: 0.96; --lantern-sway: -12px; --lantern-tilt: -4deg; }
-.intro-float-lantern:nth-child(15) { --lantern-left: 15%; --lantern-size: 28px; --lantern-bottom: 4px; --lantern-delay: 520ms; --lantern-duration: 2600ms; --lantern-sway-duration: 1500ms; --lantern-drift: 14px; --lantern-rise: -34vh; --lantern-scale: 0.84; --lantern-sway: 10px; --lantern-tilt: 4deg; }
-.intro-float-lantern:nth-child(16) { --lantern-left: 35%; --lantern-size: 36px; --lantern-bottom: -18px; --lantern-delay: 470ms; --lantern-duration: 3060ms; --lantern-sway-duration: 1900ms; --lantern-drift: -20px; --lantern-rise: -52vh; --lantern-scale: 1; --lantern-sway: -18px; --lantern-tilt: -6deg; }
-.intro-float-lantern:nth-child(17) { --lantern-left: 63%; --lantern-size: 30px; --lantern-bottom: 12px; --lantern-delay: 570ms; --lantern-duration: 2700ms; --lantern-sway-duration: 1550ms; --lantern-drift: 18px; --lantern-rise: -38vh; --lantern-scale: 0.88; --lantern-sway: 16px; --lantern-tilt: 5deg; }
-.intro-float-lantern:nth-child(18) { --lantern-left: 84%; --lantern-size: 35px; --lantern-bottom: -8px; --lantern-delay: 610ms; --lantern-duration: 3020ms; --lantern-sway-duration: 2000ms; --lantern-drift: -24px; --lantern-rise: -49vh; --lantern-scale: 0.98; --lantern-sway: -20px; --lantern-tilt: -5deg; }
+.intro-float-lantern:nth-child(1) { --lantern-left: 11%; --lantern-size: 78px; --lantern-bottom: -118px; --lantern-delay: 0ms; --lantern-duration: 3400ms; --lantern-sway-duration: 2100ms; --lantern-drift: 28px; --lantern-rise: -54vh; --lantern-scale: 1.08; --lantern-sway: -18px; --lantern-tilt: -5deg; }
+.intro-float-lantern:nth-child(2) { --lantern-left: 30%; --lantern-size: 112px; --lantern-bottom: -154px; --lantern-delay: 130ms; --lantern-duration: 4100ms; --lantern-sway-duration: 2600ms; --lantern-drift: -34px; --lantern-rise: -78vh; --lantern-scale: 1.2; --lantern-sway: 26px; --lantern-tilt: 6deg; }
+.intro-float-lantern:nth-child(3) { --lantern-left: 51%; --lantern-size: 92px; --lantern-bottom: -98px; --lantern-delay: 280ms; --lantern-duration: 3600ms; --lantern-sway-duration: 2350ms; --lantern-drift: 22px; --lantern-rise: -62vh; --lantern-scale: 1.12; --lantern-sway: -28px; --lantern-tilt: -7deg; }
+.intro-float-lantern:nth-child(4) { --lantern-left: 70%; --lantern-size: 126px; --lantern-bottom: -170px; --lantern-delay: 70ms; --lantern-duration: 4400ms; --lantern-sway-duration: 2850ms; --lantern-drift: -42px; --lantern-rise: -84vh; --lantern-scale: 1.24; --lantern-sway: 30px; --lantern-tilt: 5deg; }
+.intro-float-lantern:nth-child(5) { --lantern-left: 88%; --lantern-size: 72px; --lantern-bottom: -76px; --lantern-delay: 420ms; --lantern-duration: 3200ms; --lantern-sway-duration: 1950ms; --lantern-drift: -24px; --lantern-rise: -46vh; --lantern-scale: 1; --lantern-sway: -20px; --lantern-tilt: -6deg; }
 
 .intro-gate.is-hidden .intro-transition {
   opacity: 0;
@@ -666,28 +653,45 @@ button {
 
 .bgvideo {
   position: relative;
-  min-height: 100svh;
+  height: clamp(560px, 66.667vw, 1100px);
   overflow: hidden;
   isolation: isolate;
-  display: grid;
-  place-items: start center;
-  padding: clamp(230px, 31.5vw, 330px) 5vw clamp(92px, 11vw, 150px);
   background-color: #050404;
-  background-image: url("assets/bg_video.webp");
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
 }
 
 .bgvideo-container {
-  perspective: 1200px;
-  perspective-origin: 50% 42%;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  height: 100%;
+  min-width: 100%;
+  aspect-ratio: 3 / 2;
+  background-image: url("assets/bg_video.webp");
+  background-position: center;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  transform: translateX(-50%);
+}
+
+.bgvideo-container::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background-image: url("assets/bg_video_foreground.webp");
+  background-position: center;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
 }
 
 .bgvideo-player {
-  position: relative;
-  width: min(67vw, 1060px);
-  aspect-ratio: 16 / 7.2;
+  position: absolute;
+  z-index: 1;
+  top: 47.4%;
+  left: 14.25%;
+  width: 71.6%;
+  height: 37.2%;
   overflow: hidden;
   border: 1px solid rgba(217, 165, 93, 0.34);
   background: rgba(12, 8, 4, 0.72);
@@ -695,9 +699,7 @@ button {
     0 18px 44px rgba(0, 0, 0, 0.5),
     0 0 0 1px rgba(36, 20, 10, 0.62) inset,
     0 0 44px rgba(234, 124, 35, 0.15);
-  transform: rotateX(7deg) rotateZ(-1.2deg) skewX(-3.2deg) skewY(0.55deg);
-  transform-origin: center center;
-  clip-path: polygon(2.3% 5.4%, 97.4% 2.3%, 99.1% 94.3%, 0.8% 98.2%);
+  clip-path: polygon(1.3% 3.8%, 98.6% 3.8%, 98.8% 96%, 1.2% 96.6%);
 }
 
 .bgvideo-player::before {
@@ -1331,8 +1333,8 @@ button {
 }
 
 .creator-links {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, max-content));
   gap: 20px;
   margin-top: 34px;
 }
@@ -1816,21 +1818,7 @@ footer {
   }
 
   .bgvideo {
-    min-height: 82svh;
-    padding: 30vw 5vw 12vw;
-    background-position: center top;
-  }
-
-  .bgvideo-container {
-    perspective: 980px;
-    perspective-origin: 50% 40%;
-  }
-
-  .bgvideo-player {
-    width: min(76vw, 780px);
-    aspect-ratio: 16 / 7.7;
-    transform: rotateX(6deg) rotateZ(-1deg) skewX(-2.7deg) skewY(0.45deg);
-    clip-path: polygon(2.1% 5%, 97.5% 2.4%, 98.9% 94.4%, 0.9% 97.7%);
+    height: clamp(560px, 78vw, 820px);
   }
 
   .reward-list {
@@ -2000,20 +1988,7 @@ footer {
   }
 
   .bgvideo {
-    min-height: 74svh;
-    padding: 38vw 5vw 16vw;
-    background-position: center top;
-  }
-  .bgvideo-container{
-    perspective: 850px;
-    perspective-origin: 50% 42%;
-  }
-
-  .bgvideo-player {
-    width: min(83vw, 640px);
-    aspect-ratio: 16 / 8.5;
-    transform: rotateX(5deg) rotateZ(-0.8deg) skewX(-2deg) skewY(0.35deg);
-    clip-path: polygon(2% 4.5%, 97.6% 2.5%, 98.7% 94.4%, 1% 97.3%);
+    height: clamp(520px, 142vw, 720px);
   }
 
   .twoside {
@@ -2127,6 +2102,7 @@ footer {
   }
 
   .creator-links {
+    grid-template-columns: 1fr;
     gap: 14px;
   }
 
