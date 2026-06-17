@@ -2643,6 +2643,12 @@ footer {
     max-width: 92%;
   }
 
+  .emphsis {
+    display: block;
+    margin-top: 10px;
+    text-align: center;
+  }
+
   .fate-window {
     height: clamp(620px, 145vw, 726px);
   }
