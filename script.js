@@ -14,6 +14,7 @@ let introStarted = false;
 let introDragging = false;
 let shouldResumeMusicAfterVideo = false;
 let activeMusicPausingVideo = null;
+let bgMusicPrimed = false;
 
 function preloadImage(src) {
   return new Promise((resolve) => {
@@ -187,6 +188,17 @@ function playBackgroundMusic() {
     .catch(() => setMusicState(false));
 }
 
+function primeBackgroundMusic() {
+  if (!bgMusic || bgMusicPrimed) return;
+  bgMusic.volume = 0;
+  bgMusic.play()
+    .then(() => {
+      bgMusicPrimed = true;
+      setMusicState(true);
+    })
+    .catch(() => setMusicState(false));
+}
+
 function pauseMusicForVideo(video) {
   if (!bgMusic || !video || video === activeMusicPausingVideo) return;
   shouldResumeMusicAfterVideo = !bgMusic.paused;
@@ -227,6 +239,7 @@ function completeIntroSlider() {
   introSlider?.classList.remove("is-dragging");
   introSlider?.classList.add("is-complete");
   introGate.classList.add("is-igniting", "is-loading-igniting");
+  primeBackgroundMusic();
 
   window.setTimeout(() => {
     introGate.classList.remove("is-loading-igniting");
