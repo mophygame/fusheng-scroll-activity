@@ -2139,6 +2139,7 @@ footer {
   background-image: url("assets/bg_stone.webp");
   background-position: center;
   background-size: contain;
+  background-size: 104% 100%;
   background-repeat: no-repeat;
   box-shadow:
     0 34px 84px rgba(0, 0, 0, 0.68),
