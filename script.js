@@ -180,8 +180,15 @@ function setMusicState(isPlaying) {
   if (musicToggleText) musicToggleText.textContent = isPlaying ? "聞曲" : "息聲";
 }
 
-function playBackgroundMusic() {
+function playBackgroundMusic(options = {}) {
   if (!bgMusic) return;
+  if (options.restart) {
+    try {
+      bgMusic.currentTime = 0;
+    } catch {
+      // Some mobile browsers can reject seeks before audio metadata is ready.
+    }
+  }
   bgMusic.volume = 0.42;
   bgMusic.play()
     .then(() => setMusicState(true))
@@ -248,7 +255,7 @@ function completeIntroSlider() {
 
   window.setTimeout(() => {
     document.body.classList.remove("is-intro-open");
-    playBackgroundMusic();
+    playBackgroundMusic({ restart: bgMusicPrimed });
   }, 2450);
 
   window.setTimeout(() => {
@@ -476,20 +483,20 @@ const rewardDetails = {
   second: {
     rank: "第二名",
     title: "功業無雙",
-    prize: "2000TC金幣+限定個人MV",
-    desc: "你與角色的專屬MV。讓這段被記住的羈絆，化作只屬於你的影像篇章。",
+    prize: "2000TC幣+專屬限定卷軸+限定個人PV(60秒)",
+    desc: "你與角色的專屬影片。讓這段被記住的羈絆，化作只屬於你的影像篇章。",
   },
   first: {
     rank: "第一名",
     title: "天下魁首",
-    prize: "4000TC金幣+專屬網頁",
+    prize: "4000TC幣+專屬限定卷軸+專屬沈浸式互動網站",
     desc: "專屬互動破關網頁，讓你查看每個角色的秘密情話與大封王朝的完整歷史篇章。",
   },
   third: {
     rank: "第三名",
     title: "青史留名",
-    prize: "1000TC金幣+合照",
-    desc: "收集你與心愛角色的合照，將這次相遇留在不會褪色的記憶裡。",
+    prize: "1000TC幣+專屬限定卷軸",
+    desc: "收集你與心愛角色的合照，將這次相遇畫在名為起點的卷軸裡。",
   },
 };
 

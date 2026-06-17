@@ -1554,7 +1554,7 @@ button {
   overflow: hidden;
   background-color: #090807;
   background-image: url("assets/bg_reward.webp");
-  background-position: center;
+  background-position: center top;
   background-size: cover;
   background-repeat: no-repeat;
   text-align: center;
