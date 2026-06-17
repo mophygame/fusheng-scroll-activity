@@ -1,5 +1,8 @@
 const countdown = document.querySelector("[data-countdown]");
 
+const loadingGate = document.querySelector(".loading-gate");
+const loadingProgress = document.querySelector(".loading-progress span");
+const loadingStatus = document.querySelector(".loading-status");
 const introGate = document.querySelector(".intro-gate");
 const introSlider = document.querySelector(".intro-slider");
 const introSliderTrack = document.querySelector(".intro-slider-track");
@@ -12,10 +15,168 @@ let introDragging = false;
 let shouldResumeMusicAfterVideo = false;
 let activeMusicPausingVideo = null;
 
+function preloadImage(src) {
+  return new Promise((resolve) => {
+    const image = new Image();
+    image.onload = resolve;
+    image.onerror = resolve;
+    image.src = src;
+  });
+}
+
+function preloadVideoMetadata(src) {
+  return new Promise((resolve) => {
+    const video = document.createElement("video");
+    const done = () => {
+      video.removeEventListener("loadedmetadata", done);
+      video.removeEventListener("canplay", done);
+      video.removeEventListener("error", done);
+      resolve();
+    };
+
+    video.preload = "metadata";
+    video.muted = true;
+    video.playsInline = true;
+    video.addEventListener("loadedmetadata", done, { once: true });
+    video.addEventListener("canplay", done, { once: true });
+    video.addEventListener("error", done, { once: true });
+    video.src = src;
+    video.load();
+  });
+}
+
+function waitForVideoReady(video) {
+  return new Promise((resolve) => {
+    if (!video || video.readyState >= 2) {
+      resolve();
+      return;
+    }
+
+    const done = () => {
+      video.removeEventListener("loadeddata", done);
+      video.removeEventListener("canplay", done);
+      video.removeEventListener("error", done);
+      resolve();
+    };
+
+    video.addEventListener("loadeddata", done, { once: true });
+    video.addEventListener("canplay", done, { once: true });
+    video.addEventListener("error", done, { once: true });
+  });
+}
+
+function setLoadingProgress(progress) {
+  if (!loadingGate) return;
+  const normalized = Math.max(0.08, Math.min(progress, 1));
+  const percent = Math.round(normalized * 100);
+  loadingGate.style.setProperty("--loading-progress", String(normalized));
+  if (loadingStatus) loadingStatus.textContent = `載入中 ${percent}%`;
+  if (loadingProgress) loadingProgress.setAttribute("aria-valuenow", String(percent));
+}
+
+function trackLoadingTasks(tasks) {
+  let completed = 0;
+  setLoadingProgress(0.08);
+
+  return Promise.all(tasks.map((task) => task.finally(() => {
+    completed += 1;
+    setLoadingProgress(completed / tasks.length);
+  })));
+}
+
+function hideLoadingGate() {
+  if (!loadingGate || loadingGate.classList.contains("is-hidden")) return;
+  setLoadingProgress(1);
+  loadingGate.classList.add("is-hidden");
+  loadingGate.classList.remove("is-visible");
+  document.body.classList.remove("is-preloading");
+  window.setTimeout(() => {
+    loadingGate.hidden = true;
+  }, 720);
+}
+
+function showLoadingGate() {
+  if (!loadingGate || loadingGate.classList.contains("is-hidden")) return;
+  loadingGate.hidden = false;
+  window.requestAnimationFrame(() => {
+    loadingGate.classList.add("is-visible");
+  });
+}
+
+const loadingRevealDelay = 360;
+const maximumLoadingTime = 4000;
+let criticalAssetsLoaded = false;
+let secondaryWarmStarted = false;
+const criticalAssetsReady = trackLoadingTasks([
+  preloadImage("assets/bg_landing.webp"),
+  preloadImage("assets/title.webp?v=2"),
+  preloadImage("assets/icon_logo.webp"),
+  preloadImage("assets/icon_fire.webp"),
+  preloadImage("assets/icon_totop_dark.webp"),
+  preloadImage("assets/icon_totop_light.webp"),
+  waitForVideoReady(introVideo),
+]);
+
+const secondaryAssets = [
+  "assets/bg_video.webp",
+  "assets/bg_video_foreground.webp",
+  "assets/bg_twoside.webp",
+  "assets/bg_video2_foreground.webp",
+  "assets/bg_reward.webp",
+  "assets/bg_reward_mobile.webp",
+  "assets/bg_people.webp",
+  "assets/bg_stone.webp",
+  "assets/author_mu.webp",
+  "assets/author_mian.webp",
+  "assets/character_01.webp",
+  "assets/character_02.webp",
+  "assets/character_03.webp",
+  "assets/character_04.webp",
+  "assets/character_05.webp",
+  "assets/icon_play.webp",
+  "assets/icon_mute.webp",
+];
+
+function warmSecondaryAssets() {
+  if (secondaryWarmStarted) return;
+  secondaryWarmStarted = true;
+  secondaryAssets.forEach((src) => preloadImage(src));
+  preloadVideoMetadata("assets/ancient.mp4");
+  preloadVideoMetadata("assets/modern.mp4");
+}
+
+function scheduleSecondaryWarmup() {
+  if ("requestIdleCallback" in window) {
+    window.requestIdleCallback(warmSecondaryAssets, { timeout: 2500 });
+  } else {
+    window.setTimeout(warmSecondaryAssets, 900);
+  }
+}
+
+window.setTimeout(() => {
+  if (!criticalAssetsLoaded) showLoadingGate();
+}, loadingRevealDelay);
+
+criticalAssetsReady.finally(() => {
+  criticalAssetsLoaded = true;
+  hideLoadingGate();
+  scheduleSecondaryWarmup();
+});
+
+window.setTimeout(() => {
+  if (!criticalAssetsLoaded) {
+    criticalAssetsLoaded = true;
+    hideLoadingGate();
+    scheduleSecondaryWarmup();
+  }
+}, maximumLoadingTime);
+
 function setMusicState(isPlaying) {
   musicToggle?.classList.toggle("is-playing", isPlaying);
   musicToggle?.setAttribute("aria-pressed", String(isPlaying));
-  musicToggle?.setAttribute("aria-label", isPlaying ? "關閉背景音樂" : "開啟背景音樂");
+  musicToggle?.setAttribute("aria-label", isPlaying ? "息聲，關閉背景音樂" : "聞曲，開啟背景音樂");
+  const musicToggleText = musicToggle?.querySelector(".music-toggle-text");
+  if (musicToggleText) musicToggleText.textContent = isPlaying ? "聞曲" : "息聲";
 }
 
 function playBackgroundMusic() {
