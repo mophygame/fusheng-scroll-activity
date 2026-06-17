@@ -2684,6 +2684,12 @@ footer {
   }
 }
 
+@media (max-width: 325px) {
+  .intro-slider-copy {
+    font-size: 0.6rem;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
