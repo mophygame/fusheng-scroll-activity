@@ -127,7 +127,7 @@
       <aside class="countdown-card" aria-label="活動開始倒數">
         <div class="countdown-heading">
           <span class="pulse"></span>
-          <p>距離燈晝重啟</p>
+          <p data-countdown-label>距離燈晝重啟</p>
         </div>
         <div class="countdown" data-countdown="2026-07-10T00:00:00+08:00">
           <div><strong data-days>00</strong><span>日</span></div>
@@ -136,6 +136,7 @@
           <div><strong data-seconds>00</strong><span>秒</span></div>
         </div>
         <p class="event-date">2026.07.10 Fri · 00:00 GMT+8</p>
+        <a class="countdown-open-link" href="#" target="_blank" rel="noopener" hidden>步入燈晝</a>
       </aside>
 
       <p class="hero-index">大封十年 · 歷史驟變</p>
@@ -217,48 +218,53 @@
       </div>
 
       <div class="character-grid">
-        <button class="character-card" type="button" data-character="01" aria-pressed="false">
+        <article class="character-card" role="button" tabindex="0" data-character="01" aria-pressed="false">
           <span class="card-no">01</span>
           <span class="card-present">馬唯冀</span>
           <span class="card-role">馬術教練· 27</span>
           <span class="card-past">前世 · 待解鎖</span>
           <span class="card-quote">「自由的風吹拂著遺失的那一頁。」</span>
           <span class="card-action">揭開殘片</span>
-        </button>
-               <button class="character-card" type="button" data-character="02" aria-pressed="false">
+          <a class="character-open-link" href="#" target="_blank" rel="noopener" data-character-link hidden>執燈相見</a>
+        </article>
+        <article class="character-card" role="button" tabindex="0" data-character="02" aria-pressed="false">
           <span class="card-no">02</span>
           <span class="card-present">白霽</span>
           <span class="card-role">百貨公司美妝頂級銷售 · 28</span>
           <span class="card-past">前世 · 待解鎖</span>
           <span class="card-quote">「如果美，是建立在別人的定義上，那從現在開始，我就是定義。」</span>
           <span class="card-action">揭開殘片</span>
-        </button>
-        <button class="character-card is-active" type="button" data-character="03" aria-pressed="true">
+          <a class="character-open-link" href="#" target="_blank" rel="noopener" data-character-link hidden>執燈相見</a>
+        </article>
+        <article class="character-card is-active" role="button" tabindex="0" data-character="03" aria-pressed="true">
           <span class="card-no">03</span>
           <span class="card-present">黃奕澤</span>
           <span class="card-role">雜貨店老闆 · 26</span>
           <span class="card-past">前世 · 待解鎖</span>
           <span class="card-quote">「出生那一刻我便知，我在等一段我本該還清的債。」</span>
           <span class="card-action">揭開殘片</span>
-        </button>
+          <a class="character-open-link" href="#" target="_blank" rel="noopener" data-character-link hidden>執燈相見</a>
+        </article>
 
-        <button class="character-card" type="button" data-character="04" aria-pressed="false">
+        <article class="character-card" role="button" tabindex="0" data-character="04" aria-pressed="false">
           <span class="card-no">04</span>
           <span class="card-present">褚晏時</span>
           <span class="card-role">街頭藝術家 · 29</span>
           <span class="card-past">前世 · 待解鎖</span>
           <span class="card-quote">「藝術的靜謐，像是在安撫著某段不為人知的秘密。」</span>
           <span class="card-action">揭開殘片</span>
-        </button>
+          <a class="character-open-link" href="#" target="_blank" rel="noopener" data-character-link hidden>執燈相見</a>
+        </article>
 
-        <button class="character-card" type="button" data-character="05" aria-pressed="false">
+        <article class="character-card" role="button" tabindex="0" data-character="05" aria-pressed="false">
           <span class="card-no">05</span>
           <span class="card-present">祁烈</span>
           <span class="card-role">武打演員替身 · 31</span>
           <span class="card-past">前世 · 待解鎖</span>
           <span class="card-quote">「保護是刻在骨子裡本能，可我無從得知。」</span>
           <span class="card-action">揭開殘片</span>
-        </button>
+          <a class="character-open-link" href="#" target="_blank" rel="noopener" data-character-link hidden>執燈相見</a>
+        </article>
       </div>
       <div class="character-slider" aria-label="角色滑動導覽">
         <button  class="is-active" type="button" data-slide="0" aria-label="滑到第一位角色">01</button>
@@ -386,6 +392,7 @@
     </div>
   </div>
 
+  <script src="link-config.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

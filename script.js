@@ -1,4 +1,8 @@
 const countdown = document.querySelector("[data-countdown]");
+const countdownLabel = document.querySelector("[data-countdown-label]");
+const countdownOpenLink = document.querySelector(".countdown-open-link");
+const characterOpenLinks = document.querySelectorAll("[data-character-link]");
+const linkConfig = window.DENGZHOU_LINKS || {};
 
 const loadingGate = document.querySelector(".loading-gate");
 const loadingProgress = document.querySelector(".loading-progress span");
@@ -14,7 +18,22 @@ let introStarted = false;
 let introDragging = false;
 let shouldResumeMusicAfterVideo = false;
 let activeMusicPausingVideo = null;
-let bgMusicPrimed = false;
+let bgMusicFadeFrame = null;
+
+function applyLinkConfig() {
+  if (countdownOpenLink && linkConfig.collection) {
+    countdownOpenLink.href = linkConfig.collection;
+  }
+
+  characterOpenLinks.forEach((link) => {
+    const card = link.closest("[data-character]");
+    const characterId = card?.dataset.character;
+    const characterUrl = linkConfig.characters?.[characterId];
+    if (characterUrl) link.href = characterUrl;
+  });
+}
+
+applyLinkConfig();
 
 function preloadImage(src) {
   return new Promise((resolve) => {
@@ -136,6 +155,7 @@ const secondaryAssets = [
   "assets/character_05.webp",
   "assets/icon_play.webp",
   "assets/icon_mute.webp",
+  "assets/icon_light.webp",
 ];
 
 function warmSecondaryAssets() {
@@ -180,8 +200,43 @@ function setMusicState(isPlaying) {
   if (musicToggleText) musicToggleText.textContent = isPlaying ? "聞曲" : "息聲";
 }
 
+const bgMusicTargetVolume = 0.42;
+
+function stopBackgroundMusicFade() {
+  if (!bgMusicFadeFrame) return;
+  window.cancelAnimationFrame(bgMusicFadeFrame);
+  bgMusicFadeFrame = null;
+}
+
+function fadeBackgroundMusicVolume(fromVolume, toVolume, duration) {
+  if (!bgMusic) return;
+  stopBackgroundMusicFade();
+
+  if (!duration) {
+    bgMusic.volume = toVolume;
+    return;
+  }
+
+  const startedAt = performance.now();
+  const step = (now) => {
+    const progress = Math.min((now - startedAt) / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    bgMusic.volume = fromVolume + (toVolume - fromVolume) * eased;
+
+    if (progress < 1) {
+      bgMusicFadeFrame = window.requestAnimationFrame(step);
+    } else {
+      bgMusicFadeFrame = null;
+      bgMusic.volume = toVolume;
+    }
+  };
+
+  bgMusicFadeFrame = window.requestAnimationFrame(step);
+}
+
 function playBackgroundMusic(options = {}) {
   if (!bgMusic) return;
+  stopBackgroundMusicFade();
   if (options.restart) {
     try {
       bgMusic.currentTime = 0;
@@ -189,21 +244,24 @@ function playBackgroundMusic(options = {}) {
       // Some mobile browsers can reject seeks before audio metadata is ready.
     }
   }
-  bgMusic.volume = 0.42;
+  const targetVolume = options.volume ?? bgMusicTargetVolume;
+  const startVolume = options.startVolume ?? targetVolume;
+  bgMusic.volume = startVolume;
   bgMusic.play()
-    .then(() => setMusicState(true))
+    .then(() => {
+      setMusicState(true);
+      fadeBackgroundMusicVolume(startVolume, targetVolume, options.fadeDuration ?? 0);
+    })
     .catch(() => setMusicState(false));
 }
 
-function primeBackgroundMusic() {
-  if (!bgMusic || bgMusicPrimed) return;
-  bgMusic.volume = 0;
-  bgMusic.play()
-    .then(() => {
-      bgMusicPrimed = true;
-      setMusicState(true);
-    })
-    .catch(() => setMusicState(false));
+function startIntroBackgroundMusic() {
+  playBackgroundMusic({
+    restart: true,
+    startVolume: 0,
+    volume: bgMusicTargetVolume,
+    fadeDuration: 2450,
+  });
 }
 
 function pauseMusicForVideo(video) {
@@ -213,6 +271,7 @@ function pauseMusicForVideo(video) {
   if (shouldResumeMusicAfterVideo) {
     bgMusic.pause();
   }
+  stopBackgroundMusicFade();
 }
 
 function resumeMusicAfterVideo(video) {
@@ -246,7 +305,7 @@ function completeIntroSlider() {
   introSlider?.classList.remove("is-dragging");
   introSlider?.classList.add("is-complete");
   introGate.classList.add("is-igniting", "is-loading-igniting");
-  primeBackgroundMusic();
+  startIntroBackgroundMusic();
 
   window.setTimeout(() => {
     introGate.classList.remove("is-loading-igniting");
@@ -255,7 +314,6 @@ function completeIntroSlider() {
 
   window.setTimeout(() => {
     document.body.classList.remove("is-intro-open");
-    playBackgroundMusic({ restart: bgMusicPrimed });
   }, 2450);
 
   window.setTimeout(() => {
@@ -321,6 +379,7 @@ function updateCountdown() {
 
   const target = new Date(countdown.dataset.countdown).getTime();
   const remaining = Math.max(0, target - Date.now());
+  const isOpen = remaining === 0;
   const values = {
     days: Math.floor(remaining / 86400000),
     hours: Math.floor((remaining / 3600000) % 24),
@@ -331,6 +390,12 @@ function updateCountdown() {
   Object.entries(values).forEach(([key, value]) => {
     const element = countdown.querySelector(`[data-${key}]`);
     if (element) element.textContent = String(value).padStart(2, "0");
+  });
+
+  if (countdownLabel) countdownLabel.textContent = isOpen ? "燈晝開啟" : "距離燈晝重啟";
+  if (countdownOpenLink) countdownOpenLink.hidden = !isOpen || !linkConfig.collection;
+  characterOpenLinks.forEach((link) => {
+    link.hidden = !isOpen || link.getAttribute("href") === "#";
   });
 }
 
@@ -354,6 +419,19 @@ function setActiveCharacter(card) {
 characterCards.forEach((card) => {
   card.addEventListener("click", () => {
     setActiveCharacter(card);
+  });
+
+  card.addEventListener("keydown", (event) => {
+    if (event.target.closest(".character-open-link")) return;
+    if (event.key !== "Enter" && event.key !== " ") return;
+    event.preventDefault();
+    setActiveCharacter(card);
+  });
+});
+
+characterOpenLinks.forEach((link) => {
+  link.addEventListener("click", (event) => {
+    event.stopPropagation();
   });
 });
 
@@ -420,6 +498,7 @@ musicToggle?.addEventListener("click", () => {
   if (bgMusic.paused) {
     playBackgroundMusic();
   } else {
+    stopBackgroundMusicFade();
     bgMusic.pause();
     setMusicState(false);
   }
