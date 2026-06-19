@@ -1,5 +1,5 @@
 window.DENGZHOU_LINKS = {
-  collection: "https://www.google.com",
+  collection: "https://h5.touchieai.com/combo?code=9867d8f2-939e-480d-8796-276879c7e36f",
   characters: {
     "01": "character-01.html",
     "02": "character-02.html",
