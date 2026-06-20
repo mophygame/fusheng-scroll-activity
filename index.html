@@ -29,8 +29,8 @@
 
   <title>《燈晝餘燼:絮》如沐絮眠 x Touchie 官方活動</title>
   <link rel="prefetch" href="assets/bg_loading.webp" as="image">
-  <link rel="preload" href="assets/loading.mp4" as="video" type="video/mp4">
-  <link rel="preload" href="assets/bg_landing.webp" as="image" fetchpriority="high">
+  <link rel="preload" href="assets/bg_landing.webp" as="image" fetchpriority="high" media="(min-width: 1001px)">
+  <link rel="preload" href="assets/bg_landing＿mobile.webp" as="image" fetchpriority="high" media="(max-width: 1000px)">
   <link rel="preload" href="assets/title.webp?v=2" as="image" fetchpriority="high">
   <link rel="preload" href="assets/icon_logo.webp" as="image">
   <link rel="preload" href="assets/icon_fire.webp" as="image">
@@ -110,7 +110,10 @@
 
   <main id="top">
     <section class="hero" aria-labelledby="hero-title">
-      <img class="hero-art" src="assets/bg_landing.webp" alt="五名男子站在大封王朝宮殿與現代城市交疊的燼火之中">
+      <picture>
+        <source srcset="assets/bg_landing＿mobile.webp" media="(max-width: 1000px)">
+        <img class="hero-art" src="assets/bg_landing.webp" alt="五名男子站在大封王朝宮殿與現代城市交疊的燼火之中">
+      </picture>
       <div class="hero-shade" aria-hidden="true"></div>
       <div class="hero-copy">
         <p class="eyebrow">如沐絮眠 x Touchie · 官方活動</p>

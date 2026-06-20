@@ -127,8 +127,11 @@ const loadingRevealDelay = 360;
 const maximumLoadingTime = 4000;
 let criticalAssetsLoaded = false;
 let secondaryWarmStarted = false;
+const landingImage = window.matchMedia("(max-width: 1000px)").matches
+  ? "assets/bg_landing＿mobile.webp"
+  : "assets/bg_landing.webp";
 const criticalAssetsReady = trackLoadingTasks([
-  preloadImage("assets/bg_landing.webp"),
+  preloadImage(landingImage),
   preloadImage("assets/title.webp?v=2"),
   preloadImage("assets/icon_logo.webp"),
   preloadImage("assets/icon_fire.webp"),
@@ -202,6 +205,10 @@ function setMusicState(isPlaying) {
 
 const bgMusicTargetVolume = 0.42;
 
+function isBackgroundMusicAudible() {
+  return Boolean(bgMusic && !bgMusic.paused && bgMusic.volume > 0.01);
+}
+
 function stopBackgroundMusicFade() {
   if (!bgMusicFadeFrame) return;
   window.cancelAnimationFrame(bgMusicFadeFrame);
@@ -247,6 +254,7 @@ function playBackgroundMusic(options = {}) {
   const targetVolume = options.volume ?? bgMusicTargetVolume;
   const startVolume = options.startVolume ?? targetVolume;
   bgMusic.volume = startVolume;
+  if (targetVolume > 0) setMusicState(true);
   bgMusic.play()
     .then(() => {
       setMusicState(true);
@@ -473,6 +481,7 @@ characterGrid?.addEventListener("scroll", () => {
 });
 
 const navToggle = document.querySelector(".nav-toggle");
+const siteHeader = document.querySelector(".site-header");
 const siteNav = document.querySelector(".site-nav");
 
 navToggle?.addEventListener("click", () => {
@@ -487,6 +496,28 @@ siteNav?.querySelectorAll("a").forEach((link) => {
   });
 });
 
+const darkNavSections = document.querySelectorAll(".creator, .final-cta");
+
+if (siteHeader && darkNavSections.length) {
+  const activeDarkNavSections = new Set();
+  const darkNavObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        activeDarkNavSections.add(entry.target);
+      } else {
+        activeDarkNavSections.delete(entry.target);
+      }
+    });
+
+    siteHeader.classList.toggle("is-dark-nav", activeDarkNavSections.size > 0);
+  }, {
+    rootMargin: "-22% 0px -58% 0px",
+    threshold: 0,
+  });
+
+  darkNavSections.forEach((section) => darkNavObserver.observe(section));
+}
+
 const toTop = document.querySelector(".to-top");
 
 toTop?.addEventListener("click", () => {
@@ -495,8 +526,12 @@ toTop?.addEventListener("click", () => {
 
 musicToggle?.addEventListener("click", () => {
   if (!bgMusic) return;
-  if (bgMusic.paused) {
-    playBackgroundMusic();
+  if (!isBackgroundMusicAudible()) {
+    playBackgroundMusic({
+      startVolume: Math.max(bgMusic.volume, 0.08),
+      volume: bgMusicTargetVolume,
+      fadeDuration: 420,
+    });
   } else {
     stopBackgroundMusicFade();
     bgMusic.pause();
@@ -504,7 +539,6 @@ musicToggle?.addEventListener("click", () => {
   }
 });
 
-bgMusic?.addEventListener("play", () => setMusicState(true));
 bgMusic?.addEventListener("pause", () => setMusicState(false));
 
 const memoryPlayer = document.querySelector(".bgvideo-player");

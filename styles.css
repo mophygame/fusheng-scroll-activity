@@ -659,14 +659,17 @@ button {
   padding: 0 4vw;
   border-bottom: 1px solid rgba(255, 255, 255, 0.09);
   backdrop-filter: blur(4px);
+  transition: color 220ms ease, border-color 220ms ease, background 220ms ease;
 }
 
 .brand {
   display: flex;
   align-items: center;
   gap: 12px;
+  color: var(--paper);
   font-weight: 700;
   letter-spacing: 0.16em;
+  transition: color 220ms ease;
 }
 
 .brand-mark {
@@ -682,6 +685,7 @@ button {
   color: var(--paper-muted);
   font-size: 0.82rem;
   letter-spacing: 0.18em;
+  transition: color 220ms ease;
 }
 
 .site-nav a {
@@ -690,6 +694,20 @@ button {
 
 .site-nav a:hover {
   color: var(--paper);
+}
+
+.site-header.is-dark-nav {
+  border-bottom-color: rgba(18, 16, 14, 0.16);
+  background: rgba(239, 233, 219, 0.22);
+}
+
+.site-header.is-dark-nav .brand,
+.site-header.is-dark-nav .site-nav {
+  color: rgba(18, 16, 14, 0.76);
+}
+
+.site-header.is-dark-nav .site-nav a:hover {
+  color: var(--ink);
 }
 
 .nav-toggle {
@@ -2570,6 +2588,11 @@ footer {
     width: 26px;
     height: 1px;
     background: var(--paper);
+    transition: background 220ms ease;
+  }
+
+  .site-header.is-dark-nav .nav-toggle span {
+    background: var(--ink);
   }
 
   .site-nav {
@@ -2582,6 +2605,10 @@ footer {
     gap: 0;
     padding: 10px 6vw 22px;
     background: #0b0a09;
+  }
+
+  .site-header.is-dark-nav .site-nav {
+    background: rgba(239, 233, 219, 0.96);
   }
 
   .site-nav.is-open {
