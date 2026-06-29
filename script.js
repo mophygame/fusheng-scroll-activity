@@ -592,18 +592,20 @@ function renderDailyLanterns() {
 
   const todayString = getCurrentTaipeiDateString();
   const litLanterns = readLitLanterns();
-  const todayLantern = lanterns.find((lantern) => isLanternToday(lantern, todayString));
+  const todayLanterns = lanterns.filter((lantern) => isLanternToday(lantern, todayString));
   const litCount = lanterns.filter((_, index) => litLanterns.has(String(index + 1))).length;
   const missedCount = lanterns.filter((lantern, index) => isLanternPast(lantern, todayString) && !litLanterns.has(String(index + 1))).length;
   if (todayString < lanterns[0].date) {
     setLanternStatus("燈火尚未抵達，請於 07/03 回來點燈。");
-  } else if (todayLantern) {
+  } else if (todayLanterns.length) {
     setLanternStatus(
-      `請輕觸點燃今日的『${todayLantern.title}』。`,
+      todayLanterns.length > 1
+        ? `請輕觸點燃今日的 『第六盞燈、第七盞燈』。`
+        : `請輕觸點燃今日的『${todayLanterns[0].title}』。`,
       "錯過的燈火無法重燃，已點亮的祈願，則為你長明不滅。"
     );
   } else if (todayString > lanterns[lanterns.length - 1].date) {
-    setLanternStatus(`七日點燈已結束。已點亮 ${litCount} 盞，錯過 ${missedCount} 盞。`);
+    setLanternStatus(`六日點燈已結束。已點亮 ${litCount} 盞，錯過 ${missedCount} 盞。`);
   } else {
     setLanternStatus("今日沒有新天燈，已點亮的燈仍可再次查看。");
   }

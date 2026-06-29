@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="《燈晝餘燼:絮》限時抽卡活動。輸入活動序號，點燃寶石，召喚燈晝卡牌。">
+  <title>限時召喚｜燈晝餘燼:絮</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="preload" href="assets/bg_summon.webp" as="image" fetchpriority="high">
+  <link rel="preload" href="assets/cardbg.webp" as="image">
+  <link rel="preload" href="assets/card_interface/card.webp" as="image">
+  <link rel="preload" href="assets/title.webp?v=2" as="image">
+  <link rel="stylesheet" href="summon.css">
+</head>
+<body>
+  <main class="summon-page">
+    <a class="summon-back" href="index.html">返回活動頁</a>
+
+    <section class="summon-layout" aria-labelledby="summon-title">
+      <header class="summon-header">
+        <div class="summon-top-actions">
+          <div class="gem-counter" aria-live="polite">
+            <img src="assets/icon_light.webp" alt="">
+            <span>盞燈：</span>
+            <strong data-gems>0</strong>
+          </div>
+          <button class="info-pill" type="button" data-modal-open="code">領取盞燈</button>
+          <button class="info-pill" type="button" data-modal-open="cards">我的卡片</button>
+          <button class="info-pill" type="button" data-modal-open="rules">活動說明</button>
+        </div>
+      </header>
+
+      <section class="summon-main-visual card-pool" aria-label="夢浮燈限定卡池">
+        <div class="pool-flag" aria-hidden="true">
+          <img src="assets/card_interface/flag.webp" alt="">
+          <span>若今生再相逢<br>你還會相信史書寫下的我嗎？</span>
+        </div>
+        <div class="pool-copy">
+          <h1 id="summon-title"> <img src="assets/title.webp?v=2" alt="燈晝餘燼絮"></h1>
+          <p class="pool-subtitle">每一盞燈火，照見一段故事。</p>
+          <p class="pool-type">夢浮燈　限定卡池</p>
+          <div class="pool-icons" aria-hidden="true">
+            <span><img src="assets/card_interface/icon_01.webp" alt=""></span>
+            <span><img src="assets/card_interface/icon_02.webp" alt=""></span>
+            <span><img src="assets/card_interface/icon_03.webp" alt=""></span>
+            <span><img src="assets/card_interface/icon_04.webp" alt=""></span>
+            <span><img src="assets/card_interface/icon_05.webp" alt=""></span>
+          </div>
+        </div>
+        <div class="pool-card-preview" aria-hidden="true">
+          <img src="assets/card_interface/card.webp" alt="">
+        </div>
+        <div class="pool-action-area">
+          <p class="pool-pity">再抽 <strong>10</strong> 次必獲得 <strong>SSR</strong> 或以上卡牌</p>
+          <div class="summon-actions">
+            <button class="draw-button draw-one" type="button" data-draw="1">
+              <span>抽一盞</span>
+              <small><img src="assets/icon_light.webp" alt=""> 燈籠 x1</small>
+            </button>
+            <button class="draw-button draw-ten" type="button" data-draw="10">
+              <span>抽十盞</span>
+              <small><img src="assets/icon_light.webp" alt=""> 燈籠 x10</small>
+            </button>
+          </div>
+          <p class="pool-hint">點擊任意處開始抽卡</p>
+        </div>
+      </section>
+
+    </section>
+  </main>
+
+  <section class="summon-modal summon-control-card" data-modal="code" aria-label="序號兌換" hidden>
+    <button class="summon-modal-backdrop" type="button" data-modal-close aria-label="關閉序號兌換"></button>
+    <div class="summon-modal-panel">
+      <button class="summon-modal-close" type="button" data-modal-close aria-label="關閉">×</button>
+      <form class="code-form" data-code-form>
+        <label for="serial-code">輸入序號領取盞燈</label>
+        <div class="code-row">
+          <input id="serial-code" name="serial-code" type="text" autocomplete="off" placeholder="請輸入序號">
+          <button type="submit">領取</button>
+        </div>
+        <p class="code-message" data-code-message>每組序號僅限使用一次，成功領取後將發送盞燈至帳號。</p>
+      </form>
+    </div>
+  </section>
+
+  <section class="summon-modal result-section" data-modal="cards" aria-label="我的卡片" hidden>
+    <button class="summon-modal-backdrop" type="button" data-modal-close aria-label="關閉我的卡片"></button>
+    <div class="summon-modal-panel summon-modal-panel-wide">
+      <button class="summon-modal-close" type="button" data-modal-close aria-label="關閉">×</button>
+      <div class="result-heading">
+        <p class="summon-eyebrow">我的卡片</p>
+        <span data-card-count>已抽 0/20 張</span>
+      </div>
+      <div class="record-tabs" role="tablist" aria-label="抽卡紀錄日期">
+        <button class="record-tab is-active" type="button" role="tab" aria-selected="true" data-result-tab="day1">7/25 抽卡紀錄</button>
+        <button class="record-tab" type="button" role="tab" aria-selected="false" data-result-tab="day2">7/26 抽卡紀錄</button>
+      </div>
+      <div class="result-grid" data-results></div>
+    </div>
+  </section>
+
+  <section class="summon-modal rate-section" id="summon-rules" data-modal="rules" aria-label="活動說明" hidden>
+    <button class="summon-modal-backdrop" type="button" data-modal-close aria-label="關閉活動說明"></button>
+    <div class="summon-modal-panel summon-modal-panel-wide">
+      <button class="summon-modal-close" type="button" data-modal-close aria-label="關閉">×</button>
+      <div class="rules-panel">
+        <h2>活動說明</h2>
+        <ol>
+          <li>活動時間內使用盞燈進行抽卡，有機會獲得各種角色卡片。</li>
+          <li>每抽一次消耗 100 盞燈，連抽 10 次消耗 1000 盞燈。</li>
+          <li>每組序號僅限使用一次，兩天共可領取 2000 盞燈。</li>
+        </ol>
+      </div>
+      <p class="rule-footnote"><img src="assets/icon_light.webp" alt=""> 活動結束後，卡片會消失，請記得下載收藏喔！</p>
+    </div>
+  </section>
+
+  <div class="gem-burst" data-gem-burst hidden>
+    <div class="gem-burst-backdrop"></div>
+    <div class="gem-burst-panel">
+      <span class="gem-core"></span>
+      <strong>+1000</strong>
+      <p>寶石注入完成</p>
+    </div>
+  </div>
+
+  <div class="draw-cinematic" data-cinematic hidden>
+    <div class="cinematic-backdrop"></div>
+    <div class="cinematic-stage">
+      <video class="cinematic-effect-video" data-cinematic-video muted playsinline preload="auto"></video>
+      <div class="cinematic-sigil" aria-hidden="true">
+        <span class="sigil-ring ring-one"></span>
+        <span class="sigil-ring ring-two"></span>
+        <span class="sigil-ring ring-three"></span>
+        <span class="sigil-mark mark-one">燈</span>
+        <span class="sigil-mark mark-two">晝</span>
+        <span class="sigil-mark mark-three">餘</span>
+        <span class="sigil-mark mark-four">燼</span>
+        <span class="sigil-core"></span>
+      </div>
+      <div class="cinematic-card-track" data-cinematic-cards></div>
+      <div class="cinematic-final-card" data-cinematic-final aria-hidden="true"></div>
+      <p data-cinematic-text>召令燃起，卡影將現。</p>
+    </div>
+  </div>
+
+  <script src="summon.js"></script>
+</body>
+</html>

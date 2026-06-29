@@ -51,7 +51,7 @@ window.DENGZHOU_LINKS = {
       downloadName: "沐眠-第六盞燈-餘燼殘影.webp",
     },
     {
-      date: "2026-07-09",
+      date: "2026-07-08",
       title: "第七盞燈",
       name: "燈晝終章",
       image: "assets/day7.webp",
