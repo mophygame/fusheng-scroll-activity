@@ -6,13 +6,27 @@
   <meta name="description" content="《燈晝餘燼:絮》限時抽卡活動。輸入活動序號，點燃寶石，召喚燈晝卡牌。">
   <title>限時召喚｜燈晝餘燼:絮</title>
   <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="prefetch" href="assets/bg_loading.webp" as="image">
   <link rel="preload" href="assets/bg_summon.webp" as="image" fetchpriority="high">
   <link rel="preload" href="assets/cardbg.webp" as="image">
   <link rel="preload" href="assets/card_interface/card.webp" as="image">
   <link rel="preload" href="assets/title.webp?v=2" as="image">
   <link rel="stylesheet" href="summon.css">
 </head>
-<body>
+<body class="is-preloading">
+  <section class="loading-gate" aria-label="頁面載入中" aria-live="polite" hidden>
+    <div class="loading-ride" aria-hidden="true"></div>
+    <div class="loading-dust" aria-hidden="true"></div>
+    <div class="loading-content">
+      <p class="loading-kicker">召令將啟</p>
+      <h1>燈影入匣</h1>
+      <p class="loading-text">命運正在備馬，請稍候。</p>
+      <div class="loading-progress" aria-hidden="true">
+        <span role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></span>
+      </div>
+      <p class="loading-status" aria-hidden="true">載入中 0%</p>
+    </div>
+  </section>
   <main class="summon-page">
     <a class="summon-back" href="index.html">返回活動頁</a>
 
@@ -62,7 +76,7 @@
               <small><img src="assets/icon_light.webp" alt=""> 燈籠 x10</small>
             </button>
           </div>
-          <p class="pool-hint">點擊任意處開始抽卡</p>
+          <!-- <p class="pool-hint">點擊任意處開始抽卡</p> -->
         </div>
       </section>
 
@@ -95,6 +109,7 @@
       <div class="record-tabs" role="tablist" aria-label="抽卡紀錄日期">
         <button class="record-tab is-active" type="button" role="tab" aria-selected="true" data-result-tab="day1">7/25 抽卡紀錄</button>
         <button class="record-tab" type="button" role="tab" aria-selected="false" data-result-tab="day2">7/26 抽卡紀錄</button>
+        <button class="record-tab" type="button" role="tab" aria-selected="false" data-result-tab="rich-test">測試紀錄</button>
       </div>
       <div class="result-grid" data-results></div>
     </div>

@@ -19,6 +19,15 @@ const CONFIG = {
   ],
   gemsPerCode: 1000,
   drawCost: 100,
+  testCodes: [
+    {
+      code: "我有很多錢",
+      id: "rich-test",
+      startDate: "2026-06-30",
+      endDate: "2026-07-07",
+      gems: 5000,
+    },
+  ],
 };
 
 const RARITY_META = {
@@ -124,6 +133,9 @@ const codeForm = document.querySelector("[data-code-form]");
 const codeInput = document.querySelector("#serial-code");
 const codeMessage = document.querySelector("[data-code-message]");
 const resultsEl = document.querySelector("[data-results]");
+const loadingGate = document.querySelector(".loading-gate");
+const loadingProgress = document.querySelector(".loading-progress span");
+const loadingStatus = document.querySelector(".loading-status");
 const gemBurst = document.querySelector("[data-gem-burst]");
 const cinematic = document.querySelector("[data-cinematic]");
 const cinematicVideo = document.querySelector("[data-cinematic-video]");
@@ -145,6 +157,7 @@ let activeResultTab = getDefaultResultTab();
 init();
 
 async function init() {
+  const initialLoading = prepareInitialLoading();
   renderAll();
   queueAssetPreload();
   syncServerTime();
@@ -168,6 +181,7 @@ async function init() {
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") closeActiveModal();
   });
+  await initialLoading;
 }
 
 async function syncServerTime() {
@@ -193,9 +207,26 @@ function handleCodeSubmit(event) {
   event.preventDefault();
   playUiSound("tap");
   const code = codeInput.value.trim();
+  const testCode = getAvailableTestCode(code);
+  if (testCode) {
+    state.gems += testCode.gems;
+    state.testModeUntil = testCode.endDate;
+    state.testModeId = testCode.id;
+    saveState();
+    codeInput.value = "";
+    setCodeMessage(`測試序號已注入 ${testCode.gems} 盞燈，測試抽卡已開啟至 ${formatDate(testCode.endDate)}。`, true);
+    renderAll();
+    playGemBurst();
+    return;
+  }
+
   const activeWindow = getActiveWindow();
 
   if (!activeWindow) {
+    if (isKnownTestCode(code)) {
+      setCodeMessage("此測試序號目前不在有效日期內。", false);
+      return;
+    }
     setCodeMessage("目前不在抽卡活動開放時段。", false);
     return;
   }
@@ -224,8 +255,8 @@ function handleCodeSubmit(event) {
 
 async function handleDraw(count) {
   playUiSound("summon");
-  const activeWindow = getActiveWindow();
-  if (!activeWindow) {
+  const drawWindow = getCurrentDrawWindow();
+  if (!drawWindow) {
     setCodeMessage("目前不在抽卡活動開放時段。", false);
     return;
   }
@@ -250,10 +281,10 @@ async function handleDraw(count) {
   await playDrawCinematic(pulls);
   const stampedPulls = pulls.map((card) => ({
     ...card,
-    windowId: activeWindow.id,
-    drawDate: activeWindow.date,
+    windowId: drawWindow.id,
+    drawDate: drawWindow.date,
   }));
-  activeResultTab = activeWindow.id;
+  activeResultTab = drawWindow.id;
   const previousResults = loadResults();
   const nextResults = [...stampedPulls, ...previousResults].slice(0, 60);
   saveResults(nextResults);
@@ -262,12 +293,15 @@ async function handleDraw(count) {
 
 function renderAll(isServerSynced = null) {
   const activeWindow = getActiveWindow();
+  const drawWindow = getCurrentDrawWindow();
   const upcoming = getUpcomingWindow();
   const syncedText = isServerSynced === true ? "線上台北時間已校正。" : isServerSynced === false ? "" : "";
 
   if (statusEl) {
     if (activeWindow) {
       statusEl.textContent = `${formatDate(activeWindow.date)} ${activeWindow.start}-${activeWindow.end} 召令開啟中。${syncedText}`;
+    } else if (drawWindow?.isTest) {
+      statusEl.textContent = `測試召令開啟中，可測試抽卡至 ${formatDate(drawWindow.endDate)}。${syncedText}`;
     } else if (upcoming) {
       statusEl.textContent = `下一場召令：${formatDate(upcoming.date)} ${upcoming.start}-${upcoming.end}。${syncedText}`;
     } else {
@@ -280,7 +314,7 @@ function renderAll(isServerSynced = null) {
   });
   drawButtons.forEach((button) => {
     const count = Number(button.dataset.draw);
-    button.disabled = !activeWindow || state.gems < count * CONFIG.drawCost;
+    button.disabled = !drawWindow || state.gems < count * CONFIG.drawCost;
   });
   renderResults(loadResults());
 }
@@ -343,6 +377,7 @@ function getResultWindowId(card) {
 }
 
 function getWindowLabel(windowId) {
+  if (windowId === "rich-test") return "測試";
   const windowItem = CONFIG.windows.find((item) => item.id === windowId) || CONFIG.windows[0];
   return formatDate(windowItem.date);
 }
@@ -380,11 +415,37 @@ function getActiveWindow() {
   }) || null;
 }
 
+function getCurrentDrawWindow() {
+  const activeWindow = getActiveWindow();
+  if (activeWindow) return activeWindow;
+  if (!isTestModeActive()) return null;
+  return {
+    id: state.testModeId || "rich-test",
+    date: clock.date,
+    endDate: state.testModeUntil,
+    isTest: true,
+  };
+}
+
 function getUpcomingWindow() {
   return CONFIG.windows.find((windowItem) => {
     if (clock.date < windowItem.date) return true;
     return clock.date === windowItem.date && compareTime(clock.time, windowItem.end) < 0;
   }) || null;
+}
+
+function getAvailableTestCode(code) {
+  return CONFIG.testCodes.find((item) => (
+    code === item.code && clock.date >= item.startDate && clock.date <= item.endDate
+  )) || null;
+}
+
+function isKnownTestCode(code) {
+  return CONFIG.testCodes.some((item) => item.code === code);
+}
+
+function isTestModeActive() {
+  return Boolean(state.testModeUntil && clock.date <= state.testModeUntil);
 }
 
 function rollRarity(isGuaranteed) {
@@ -508,6 +569,12 @@ function renderFinalCard(card) {
           <span>${meta.title}</span>
         </div>
       </div>
+      <span class="electric-border" aria-hidden="true">
+        <span class="electric-edge electric-edge-top"></span>
+        <span class="electric-edge electric-edge-right"></span>
+        <span class="electric-edge electric-edge-bottom"></span>
+        <span class="electric-edge electric-edge-left"></span>
+      </span>
     </article>
   `;
 }
@@ -571,6 +638,85 @@ function wait(duration) {
   return new Promise((resolve) => window.setTimeout(resolve, duration));
 }
 
+function preloadImage(src) {
+  return new Promise((resolve) => {
+    const image = new Image();
+    image.onload = resolve;
+    image.onerror = resolve;
+    image.src = src;
+  });
+}
+
+function setLoadingProgress(progress) {
+  if (!loadingGate) return;
+  const normalized = Math.max(0.08, Math.min(progress, 1));
+  const percent = Math.round(normalized * 100);
+  loadingGate.style.setProperty("--loading-progress", String(normalized));
+  if (loadingStatus) loadingStatus.textContent = `載入中 ${percent}%`;
+  if (loadingProgress) loadingProgress.setAttribute("aria-valuenow", String(percent));
+}
+
+function showLoadingGate() {
+  if (!loadingGate || loadingGate.classList.contains("is-hidden")) return;
+  loadingGate.hidden = false;
+  window.requestAnimationFrame(() => {
+    loadingGate.classList.add("is-visible");
+  });
+}
+
+function hideLoadingGate() {
+  if (!loadingGate || loadingGate.classList.contains("is-hidden")) {
+    document.body.classList.remove("is-preloading");
+    return;
+  }
+  setLoadingProgress(1);
+  loadingGate.classList.add("is-hidden");
+  loadingGate.classList.remove("is-visible");
+  document.body.classList.remove("is-preloading");
+  window.setTimeout(() => {
+    loadingGate.hidden = true;
+  }, 720);
+}
+
+async function prepareInitialLoading() {
+  if (!loadingGate) {
+    document.body.classList.remove("is-preloading");
+    return;
+  }
+
+  const revealDelay = 360;
+  const maxWait = 4000;
+  let completed = 0;
+  const assets = [
+    "assets/card_interface/background.webp",
+    "assets/bg_summon.webp",
+    "assets/title.webp?v=2",
+    "assets/card_interface/card.webp",
+    "assets/card_interface/button.webp",
+    "assets/icon_light.webp",
+    "assets/bg_loading.webp",
+  ];
+
+  setLoadingProgress(0.08);
+  const revealTimer = window.setTimeout(showLoadingGate, revealDelay);
+  const tasks = assets.map((source) => preloadImage(source).finally(() => {
+    completed += 1;
+    setLoadingProgress(completed / assets.length);
+  }));
+  await Promise.race([
+    Promise.all(tasks),
+    wait(maxWait),
+  ]);
+  window.clearTimeout(revealTimer);
+  if (loadingGate.hidden) {
+    setLoadingProgress(1);
+    document.body.classList.remove("is-preloading");
+    loadingGate.classList.add("is-hidden");
+    return;
+  }
+  hideLoadingGate();
+}
+
 function queueAssetPreload() {
   const run = () => preloadSummonAssets();
   if ("requestIdleCallback" in window) {
@@ -587,11 +733,7 @@ function preloadSummonAssets() {
     "assets/card_interface/card.webp",
     "assets/title.webp?v=2",
     "assets/icon_light.webp",
-  ].forEach((source) => {
-    const image = new Image();
-    image.decoding = "async";
-    image.src = source;
-  });
+  ].forEach((source) => preloadImage(source));
 
   const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
   const isConstrained = Boolean(connection?.saveData) || /2g/.test(connection?.effectiveType || "");
@@ -696,12 +838,14 @@ function setCodeMessage(message, isSuccess) {
 }
 
 function loadState() {
-  const fallback = { gems: 0, pityCount: 0 };
+  const fallback = { gems: 0, pityCount: 0, testModeUntil: "", testModeId: "" };
   try {
     const value = decodeStore(localStorage.getItem(stateKey));
     return {
       gems: Number(value?.gems || 0),
       pityCount: Math.min(Number(value?.pityCount || 0), 9),
+      testModeUntil: typeof value?.testModeUntil === "string" ? value.testModeUntil : "",
+      testModeId: typeof value?.testModeId === "string" ? value.testModeId : "",
     };
   } catch {
     return fallback;
