@@ -87,12 +87,12 @@ const CARD_SUFFIXES = [
 ];
 
 const CARD_IMAGE_FALLBACKS = {
-  USR: "assets/cards/USR-01.webp",
-  UR: "assets/card_interface/card.webp",
-  SSR: "assets/card_interface/card.webp",
-  SR: "assets/card_interface/card.webp",
-  S: "assets/card_interface/card.webp",
-  R: "assets/card_interface/card.webp",
+  USR: "assets/cards/cardbg-landscape.webp",
+  UR: "assets/card_interface/cardbg-landscape.webp",
+  SSR: "assets/card_interface/cardbg-landscape.webp",
+  SR: "assets/card_interface/cardbg-landscape.webp",
+  S: "assets/card_interface/cardbg-landscape.webp",
+  R: "assets/card_interface/cardbg-landscape.webp",
 };
 
 const RARITY_ORDER = {
@@ -560,7 +560,7 @@ function renderFinalCard(card) {
     <article class="cinematic-final-card-inner rare-${card.rarity.toLowerCase()}">
       <div class="cinematic-card-flipper">
         <div class="cinematic-card-side cinematic-card-back" aria-hidden="true">
-          <img src="assets/card_interface/card.webp" alt="">
+          <img src="assets/card_interface/cardbg-landscape.webp" alt="">
         </div>
         <div class="cinematic-card-side cinematic-card-front">
           <img src="${card.image}" alt="${card.name}" onerror="this.onerror=null;this.src='${getFallbackCardImage(card.rarity)}';">
@@ -692,6 +692,7 @@ async function prepareInitialLoading() {
     "assets/bg_summon.webp",
     "assets/title.webp?v=2",
     "assets/card_interface/card.webp",
+    "assets/card_interface/cardbg-landscape.webp",
     "assets/card_interface/button.webp",
     "assets/icon_light.webp",
     "assets/bg_loading.webp",
