@@ -564,9 +564,8 @@ function renderFinalCard(card) {
         </div>
         <div class="cinematic-card-side cinematic-card-front">
           <img src="${card.image}" alt="${card.name}" onerror="this.onerror=null;this.src='${getFallbackCardImage(card.rarity)}';">
-          <strong>${card.rarity}</strong>
           <b>${card.name}</b>
-          <span>${meta.title}</span>
+          <span><strong>${card.rarity}</strong> ${meta.title}</span>
         </div>
       </div>
       <span class="electric-border" aria-hidden="true">
@@ -595,20 +594,33 @@ function playEffectVideo(rarity) {
 
   return new Promise((resolve) => {
     let resolved = false;
+    let pauseGuard = true;
     const finish = () => {
       if (resolved) return;
       resolved = true;
-      cinematicVideo.pause();
+      pauseGuard = false;
       cinematicVideo.removeEventListener("ended", finish);
       cinematicVideo.removeEventListener("error", finish);
+      cinematicVideo.removeEventListener("pause", resumeIfInterrupted);
       resolve();
+    };
+    const resumeIfInterrupted = () => {
+      if (!pauseGuard || resolved || cinematicVideo.ended) return;
+      const resumePromise = cinematicVideo.play();
+      if (resumePromise?.catch) resumePromise.catch(() => {});
     };
 
     cinematicVideo.src = source;
+    cinematicVideo.controls = false;
+    cinematicVideo.defaultMuted = false;
+    cinematicVideo.muted = false;
+    cinematicVideo.volume = 1;
+    cinematicVideo.playsInline = true;
     cinematicVideo.currentTime = 0;
     cinematicVideo.load();
     cinematicVideo.addEventListener("ended", finish, { once: true });
     cinematicVideo.addEventListener("error", finish, { once: true });
+    cinematicVideo.addEventListener("pause", resumeIfInterrupted);
 
     const playPromise = cinematicVideo.play();
     if (playPromise?.catch) {
@@ -616,7 +628,6 @@ function playEffectVideo(rarity) {
         window.setTimeout(finish, 600);
       });
     }
-    window.setTimeout(finish, 4300);
   });
 }
 
