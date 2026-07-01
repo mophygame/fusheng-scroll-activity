@@ -1914,8 +1914,9 @@ a {
 
 .card-rarity {
   position: absolute;
-  top: 10px;
+  bottom: 41px;
   left: 10px;
+  color: #e2b86b;
   font-size: clamp(0.72rem, 1.4vw, 1rem);
   text-shadow: 0 0 12px var(--card-glow), 0 1px 3px rgba(0, 0, 0, 0.8);
 }

@@ -55,12 +55,12 @@ const GUARANTEE_RATES = [
 ];
 
 const CARD_COUNTS = {
-  USR: 2,
-  UR: 6,
-  SSR: 12,
+  USR: 1,
+  UR: 2,
+  SSR: 7,
   SR: 15,
   S: 15,
-  R: 20,
+  R: 50,
 };
 
 const CARD_SUFFIXES = [
