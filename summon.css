@@ -644,7 +644,6 @@ a {
   min-height: 0;
   padding: 14px 14px 18px;
   overflow: hidden;
-  border: 1px solid rgba(239, 228, 207, 0.16);
   background:
     radial-gradient(circle at 50% 18%, var(--card-glow), transparent 46%),
     linear-gradient(160deg, rgba(18, 12, 9, 0.96), rgba(4, 4, 4, 0.96));
@@ -663,7 +662,9 @@ a {
 .card-art {
   position: relative;
   z-index: 1;
-  display: grid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   place-items: center;
   width: 100%;
   aspect-ratio: 4/6;
@@ -679,7 +680,7 @@ a {
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
   filter: drop-shadow(0 0 14px var(--card-glow));
 }
 
@@ -794,6 +795,10 @@ a {
   display: grid;
   place-items: center;
   padding: 24px;
+}
+
+.gem-burst {
+  z-index: 340;
 }
 
 .gem-burst-backdrop,
@@ -1891,7 +1896,7 @@ a {
   gap: 6px;
   padding: 6px;
   border-color: rgba(55, 39, 29, 0.28);
-  border-radius: 6px;
+  border-radius: 16px;
   background: rgba(24, 22, 23, 0.92);
   box-shadow: 0 10px 22px rgba(0, 0, 0, 0.24), 0 0 18px var(--card-glow);
 }
@@ -2051,7 +2056,7 @@ a {
   .summon-layout {
     width: 100%;
     min-height: 100svh;
-    padding: 18px 14px 30px;
+    /* padding: 18px 14px 30px; */
     border-left: 0;
     border-right: 0;
   }
@@ -2281,7 +2286,7 @@ a {
   height: 100%;
   min-height: 0;
   max-height: 100%;
-  padding: clamp(18px, 3vw, 42px) clamp(18px, 3vw, 42px) clamp(34px, 4.4vw, 68px);
+/*   padding: clamp(18px, 3vw, 42px) clamp(18px, 3vw, 42px) clamp(34px, 4.4vw, 68px); */
   overflow: hidden;
   background: transparent;
 }
@@ -2445,8 +2450,9 @@ button.info-pill {
 }
 
 .pool-icons img {
-  width: 70%;
-  height: 70%;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 1;
   object-fit: contain;
   filter: sepia(0.2) brightness(1.06) drop-shadow(0 0 8px rgba(233, 211, 176, 0.28));
 }
@@ -2622,7 +2628,7 @@ button.info-pill {
   position: relative;
   z-index: 1;
   width: min(620px, 100%);
-  max-height: min(82svh, 760px);
+  max-height: min(90svh, 90vh);
   overflow: auto;
   padding: clamp(24px, 4vw, 42px);
   color: rgba(238, 222, 198, 0.94);
@@ -2843,7 +2849,7 @@ body.is-modal-open {
   }
 
   .summon-layout {
-    padding: clamp(8px, 2.4vw, 14px) 14px clamp(10px, 2.8vw, 18px);
+    /* padding: clamp(8px, 2.4vw, 14px) 14px clamp(10px, 2.8vw, 18px); */
     min-height: 0;
     max-height: 100%;
     overflow: hidden;
@@ -2959,64 +2965,64 @@ body.is-modal-open {
 
 /* Rarity-specific summon cinematics */
 .draw-cinematic {
-  --summon-main: 246, 194, 81;
-  --summon-second: 255, 224, 150;
-  --summon-accent: 255, 235, 180;
+  --summon-main: 238, 190, 94;
+  --summon-second: 255, 223, 150;
+  --summon-accent: 255, 241, 203;
   --summon-flare: 0.32;
   --summon-particle: 0.42;
   --summon-ring-speed: 9s;
 }
 
 .draw-cinematic.theme-r {
-  --summon-main: 232, 178, 88;
-  --summon-second: 255, 225, 160;
-  --summon-accent: 255, 240, 198;
+  --summon-main: 220, 158, 74;
+  --summon-second: 248, 205, 126;
+  --summon-accent: 255, 232, 180;
   --summon-flare: 0.18;
   --summon-particle: 0.24;
   --summon-ring-speed: 13s;
 }
 
 .draw-cinematic.theme-s {
-  --summon-main: 255, 205, 76;
-  --summon-second: 255, 232, 142;
-  --summon-accent: 255, 245, 190;
+  --summon-main: 255, 202, 64;
+  --summon-second: 255, 226, 126;
+  --summon-accent: 255, 244, 196;
   --summon-flare: 0.3;
   --summon-particle: 0.38;
   --summon-ring-speed: 10s;
 }
 
 .draw-cinematic.theme-sr {
-  --summon-main: 65, 226, 174;
-  --summon-second: 78, 214, 230;
-  --summon-accent: 191, 255, 226;
+  --summon-main: 72, 224, 185;
+  --summon-second: 84, 202, 224;
+  --summon-accent: 199, 255, 234;
   --summon-flare: 0.38;
   --summon-particle: 0.46;
   --summon-ring-speed: 7s;
 }
 
 .draw-cinematic.theme-ssr {
-  --summon-main: 255, 76, 42;
-  --summon-second: 255, 165, 62;
-  --summon-accent: 255, 220, 126;
+  --summon-main: 255, 82, 36;
+  --summon-second: 255, 152, 54;
+  --summon-accent: 255, 214, 112;
   --summon-flare: 0.58;
   --summon-particle: 0.68;
   --summon-ring-speed: 5.5s;
 }
 
 .draw-cinematic.theme-ur {
-  --summon-main: 170, 112, 255;
-  --summon-second: 235, 238, 255;
-  --summon-accent: 255, 236, 174;
+  --summon-main: 178, 122, 255;
+  --summon-second: 232, 235, 255;
+  --summon-accent: 255, 226, 166;
   --summon-flare: 0.62;
   --summon-particle: 0.76;
   --summon-ring-speed: 4.8s;
 }
 
 .draw-cinematic.theme-usr {
-  --summon-main: 255, 248, 215;
-  --summon-second: 255, 70, 44;
-  --summon-accent: 255, 213, 96;
-  --summon-flare: 0.86;
+  --summon-main: 255, 224, 82;
+  --summon-second: 255, 246, 198;
+  --summon-accent: 255, 255, 238;
+  --summon-flare: 0.98;
   --summon-particle: 0.95;
   --summon-ring-speed: 3.8s;
 }
@@ -3183,6 +3189,25 @@ body.is-modal-open {
   visibility: hidden;
 }
 
+.draw-cinematic.is-video-phase.is-buffering-video .cinematic-stage p {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(44px, 8vh, 88px);
+  z-index: 4;
+  margin: 0;
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%);
+  color: rgba(255, 238, 190, 0.92);
+  font-size: clamp(0.88rem, 2.8vw, 1.15rem);
+  letter-spacing: 0.18em;
+  text-align: center;
+  text-shadow:
+    0 0 18px rgba(255, 179, 74, 0.72),
+    0 0 36px rgba(0, 0, 0, 0.8);
+  animation: cinematic-buffer-text 1080ms ease-in-out infinite;
+}
+
 .draw-cinematic.is-video-phase .cinematic-stage::before,
 .draw-cinematic.is-video-phase .cinematic-stage::after {
   opacity: 0;
@@ -3244,9 +3269,10 @@ body.is-modal-open {
 
 .draw-cinematic .cinematic-final-card-inner {
   display: block;
-  width: clamp(210px, 25vw, 350px);
+  width: clamp(300px, 38vw, 500px);
+  max-width: min(86vw, 54svh);
   min-height: 0;
-  aspect-ratio: 2 / 3;
+  aspect-ratio: 3 / 4;
   padding: 0;
   overflow: visible;
   border: 0;
@@ -3275,9 +3301,9 @@ body.is-modal-open {
 
 .electric-border {
   position: absolute;
-  inset: -9px;
+  inset: -12px;
   z-index: 8;
-  border-radius: 28px;
+  border-radius: 30px;
   pointer-events: none;
   opacity: 0;
   filter:
@@ -3291,30 +3317,32 @@ body.is-modal-open {
 .electric-edge {
   position: absolute;
   display: block;
+  overflow: hidden;
   --edge-transform: translateZ(0);
   background:
-    linear-gradient(90deg, transparent, rgba(var(--summon-accent), 0.88) 8%, rgba(var(--summon-main), 1) 42%, rgba(255, 255, 240, 0.98) 50%, rgba(var(--summon-second), 0.92) 58%, rgba(var(--summon-main), 0.82) 88%, transparent),
-    repeating-linear-gradient(90deg, transparent 0 7px, rgba(255, 255, 255, 0.86) 8px 9px, transparent 10px 18px);
-  background-size: 100% 100%, 44px 100%;
-  animation: electric-edge-run 620ms linear infinite, electric-edge-jitter 720ms steps(4, end) infinite;
+    linear-gradient(90deg, transparent, rgba(var(--summon-accent), 0.18) 18%, rgba(var(--summon-main), 0.42) 50%, rgba(var(--summon-second), 0.18) 82%, transparent);
+  animation: electric-edge-jitter 880ms steps(4, end) infinite;
 }
 
 .electric-edge::before,
 .electric-edge::after {
   content: "";
   position: absolute;
-  background: rgba(var(--summon-accent), 0.96);
+  background:
+    linear-gradient(90deg, transparent, rgba(var(--summon-accent), 0.72) 12%, rgba(255, 255, 245, 1) 48%, rgba(var(--summon-main), 0.9) 68%, transparent);
   box-shadow:
-    0 0 8px rgba(var(--summon-accent), 0.94),
-    0 0 18px rgba(var(--summon-main), 0.7);
-  opacity: 0.92;
+    0 0 8px rgba(var(--summon-accent), 0.98),
+    0 0 20px rgba(var(--summon-main), 0.84),
+    0 0 38px rgba(var(--summon-second), 0.38);
+  opacity: 0.96;
+  filter: blur(0.2px);
 }
 
 .electric-edge-top,
 .electric-edge-bottom {
-  left: 16px;
-  right: 16px;
-  height: 11px;
+  left: 18px;
+  right: 18px;
+  height: 13px;
   transform-origin: center;
   clip-path: polygon(0 44%, 5% 18%, 11% 38%, 17% 28%, 24% 50%, 31% 30%, 36% 56%, 43% 26%, 50% 40%, 56% 8%, 62% 54%, 69% 32%, 74% 48%, 82% 24%, 90% 38%, 96% 20%, 100% 46%, 100% 74%, 94% 62%, 86% 80%, 77% 58%, 70% 76%, 63% 60%, 57% 88%, 50% 64%, 43% 78%, 35% 58%, 29% 84%, 22% 62%, 14% 78%, 7% 58%, 0 72%);
 }
@@ -3330,13 +3358,11 @@ body.is-modal-open {
 
 .electric-edge-right,
 .electric-edge-left {
-  top: 16px;
-  bottom: 16px;
-  width: 11px;
+  top: 18px;
+  bottom: 18px;
+  width: 13px;
   background:
-    linear-gradient(180deg, transparent, rgba(var(--summon-accent), 0.88) 8%, rgba(var(--summon-main), 1) 42%, rgba(255, 255, 240, 0.98) 50%, rgba(var(--summon-second), 0.92) 58%, rgba(var(--summon-main), 0.82) 88%, transparent),
-    repeating-linear-gradient(180deg, transparent 0 7px, rgba(255, 255, 255, 0.86) 8px 9px, transparent 10px 18px);
-  background-size: 100% 100%, 100% 44px;
+    linear-gradient(180deg, transparent, rgba(var(--summon-accent), 0.18) 18%, rgba(var(--summon-main), 0.42) 50%, rgba(var(--summon-second), 0.18) 82%, transparent);
   clip-path: polygon(42% 0, 70% 5%, 48% 12%, 74% 20%, 40% 28%, 62% 35%, 36% 43%, 78% 51%, 44% 58%, 66% 66%, 32% 75%, 70% 83%, 42% 91%, 58% 100%, 26% 100%, 40% 91%, 18% 82%, 40% 74%, 16% 65%, 36% 57%, 10% 49%, 34% 42%, 18% 34%, 38% 25%, 14% 16%, 34% 8%, 20% 0);
 }
 
@@ -3350,53 +3376,60 @@ body.is-modal-open {
 }
 
 .electric-edge-top::before {
-  width: 17%;
-  height: 2px;
-  left: 8%;
-  top: 8px;
-  transform: rotate(-11deg);
+  width: 34%;
+  height: 100%;
+  left: -38%;
+  top: 0;
+  animation: electric-arc-horizontal 2100ms cubic-bezier(0.45, 0, 0.2, 1) infinite;
 }
 
 .electric-edge-top::after {
-  width: 11%;
-  height: 2px;
-  right: 22%;
-  top: 1px;
-  transform: rotate(16deg);
+  width: 18%;
+  height: 100%;
+  left: -28%;
+  top: 0;
+  opacity: 0.64;
+  animation: electric-arc-horizontal 2100ms cubic-bezier(0.45, 0, 0.2, 1) 360ms infinite;
 }
 
 .electric-edge-bottom::before {
-  width: 16%;
-  height: 2px;
-  left: 18%;
-  bottom: 3px;
-  transform: rotate(9deg);
+  width: 34%;
+  height: 100%;
+  right: -38%;
+  bottom: 0;
+  animation: electric-arc-horizontal-reverse 2100ms cubic-bezier(0.45, 0, 0.2, 1) 1060ms infinite;
 }
 
 .electric-edge-bottom::after {
-  width: 12%;
-  height: 2px;
-  right: 10%;
-  bottom: 7px;
-  transform: rotate(-13deg);
+  width: 18%;
+  height: 100%;
+  right: -28%;
+  bottom: 0;
+  opacity: 0.64;
+  animation: electric-arc-horizontal-reverse 2100ms cubic-bezier(0.45, 0, 0.2, 1) 1380ms infinite;
 }
 
 .electric-edge-right::before,
 .electric-edge-left::before {
-  width: 2px;
-  height: 16%;
-  top: 12%;
-  left: 8px;
-  transform: rotate(10deg);
+  width: 100%;
+  height: 34%;
+  top: -38%;
+  left: 0;
+  background:
+    linear-gradient(180deg, transparent, rgba(var(--summon-accent), 0.72) 12%, rgba(255, 255, 245, 1) 48%, rgba(var(--summon-main), 0.9) 68%, transparent);
+  animation: electric-arc-vertical 2100ms cubic-bezier(0.45, 0, 0.2, 1) 540ms infinite;
 }
 
 .electric-edge-right::after,
 .electric-edge-left::after {
-  width: 2px;
-  height: 13%;
-  bottom: 17%;
-  left: 2px;
-  transform: rotate(-12deg);
+  width: 100%;
+  height: 18%;
+  top: -28%;
+  left: 0;
+  opacity: 0.64;
+  background:
+    linear-gradient(180deg, transparent, rgba(var(--summon-accent), 0.72) 12%, rgba(255, 255, 245, 1) 48%, rgba(var(--summon-main), 0.9) 68%, transparent);
+  animation: electric-arc-vertical 2100ms cubic-bezier(0.45, 0, 0.2, 1) 820ms infinite;
 }
 
 .cinematic-card-side {
@@ -3455,7 +3488,7 @@ body.is-modal-open {
 .cinematic-card-front img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .cinematic-card-back img {
@@ -3463,9 +3496,8 @@ body.is-modal-open {
 }
 
 .cinematic-card-front {
-  grid-template-rows: 1fr auto auto;
-  align-items: end;
-  padding: 12px 12px 18px;
+  place-items: center;
+  padding: 0;
   background:
     radial-gradient(circle at 50% 24%, var(--card-glow), transparent 42%),
     linear-gradient(180deg, rgba(8, 7, 10, 0.08), rgba(3, 3, 6, 0.88)),
@@ -3478,7 +3510,7 @@ body.is-modal-open {
   inset: 0;
   z-index: 0;
   object-fit: contain;
-  padding: 10px;
+  padding: 0;
   filter: drop-shadow(0 0 20px var(--card-glow));
 }
 
@@ -3603,6 +3635,91 @@ body.is-modal-open {
     repeating-linear-gradient(180deg, transparent 0 6px, rgba(255, 255, 255, 0.96) 7px 9px, transparent 10px 17px);
 }
 
+.draw-cinematic .cinematic-sigil,
+.draw-cinematic .cinematic-stage::before,
+.draw-cinematic .cinematic-stage::after {
+  display: none;
+}
+
+.draw-cinematic.theme-r .cinematic-card-side {
+  box-shadow:
+    0 0 28px rgba(220, 158, 74, 0.24),
+    0 0 12px rgba(255, 232, 180, 0.22),
+    inset 0 0 20px rgba(255, 223, 168, 0.08);
+}
+
+.draw-cinematic.theme-s .cinematic-card-side {
+  box-shadow:
+    0 0 54px rgba(255, 202, 64, 0.44),
+    0 0 24px rgba(255, 244, 196, 0.3),
+    inset 0 0 30px rgba(255, 226, 126, 0.12);
+}
+
+.draw-cinematic.theme-sr .cinematic-card-side {
+  box-shadow:
+    0 0 68px rgba(72, 224, 185, 0.48),
+    0 0 36px rgba(84, 202, 224, 0.32),
+    inset 0 0 32px rgba(199, 255, 234, 0.14);
+}
+
+.draw-cinematic.theme-ssr .cinematic-card-side {
+  box-shadow:
+    0 0 92px rgba(255, 82, 36, 0.66),
+    0 0 46px rgba(255, 152, 54, 0.46),
+    inset 0 0 40px rgba(255, 214, 112, 0.18);
+}
+
+.draw-cinematic.theme-ur .cinematic-card-side {
+  box-shadow:
+    0 0 104px rgba(178, 122, 255, 0.7),
+    0 0 54px rgba(232, 235, 255, 0.44),
+    inset 0 0 42px rgba(255, 226, 166, 0.18);
+}
+
+.draw-cinematic.theme-usr .cinematic-card-side {
+  box-shadow:
+    0 0 150px rgba(255, 224, 82, 0.92),
+    0 0 88px rgba(255, 246, 198, 0.78),
+    0 0 42px rgba(255, 117, 48, 0.42),
+    inset 0 0 54px rgba(255, 255, 238, 0.32);
+}
+
+.draw-cinematic.theme-usr .cinematic-card-side::before {
+  background: conic-gradient(from 0deg, #fffef2, #ffd13d, #fff4a8, #ffffff, #ffb23b, #fffef2);
+}
+
+.draw-cinematic.theme-ssr .electric-border {
+  filter:
+    drop-shadow(0 0 7px rgba(255, 214, 112, 1))
+    drop-shadow(0 0 24px rgba(255, 82, 36, 0.86))
+    drop-shadow(0 0 48px rgba(255, 152, 54, 0.5));
+}
+
+.draw-cinematic.theme-ur .electric-border {
+  filter:
+    drop-shadow(0 0 7px rgba(255, 226, 166, 1))
+    drop-shadow(0 0 24px rgba(178, 122, 255, 0.88))
+    drop-shadow(0 0 52px rgba(232, 235, 255, 0.56));
+}
+
+.draw-cinematic.theme-usr .electric-border {
+  filter:
+    drop-shadow(0 0 10px rgba(255, 255, 238, 1))
+    drop-shadow(0 0 34px rgba(255, 224, 82, 0.98))
+    drop-shadow(0 0 76px rgba(255, 178, 59, 0.72));
+}
+
+.draw-cinematic.theme-usr .electric-edge {
+  background:
+    linear-gradient(90deg, transparent, rgba(255, 254, 242, 0.24) 18%, rgba(255, 209, 61, 0.6) 50%, rgba(255, 178, 59, 0.24) 82%, transparent);
+}
+
+.draw-cinematic.theme-usr .electric-edge-right,
+.draw-cinematic.theme-usr .electric-edge-left {
+  background:
+    linear-gradient(180deg, transparent, rgba(255, 254, 242, 0.24) 18%, rgba(255, 209, 61, 0.6) 50%, rgba(255, 178, 59, 0.24) 82%, transparent);
+}
+
 @keyframes cinematic-card-aura {
   0% {
     opacity: 0;
@@ -3615,6 +3732,17 @@ body.is-modal-open {
   100% {
     opacity: 0.18;
     transform: scale(0.9);
+  }
+}
+
+@keyframes cinematic-buffer-text {
+  0%, 100% {
+    opacity: 0.62;
+    transform: translateX(-50%) translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-4px);
   }
 }
 
@@ -3688,15 +3816,15 @@ body.is-modal-open {
 }
 
 @keyframes electric-border-in {
-  0%, 52% {
+  0%, 18% {
     opacity: 0;
     transform: scale(0.96);
   }
-  62% {
+  30% {
     opacity: 1;
     transform: scale(1.025);
   }
-  74%, 100% {
+  46%, 100% {
     opacity: 0.9;
     transform: scale(1);
   }
@@ -3723,6 +3851,48 @@ body.is-modal-open {
 @keyframes electric-edge-run {
   to {
     background-position: 0 0, 44px 0;
+  }
+}
+
+@keyframes electric-arc-horizontal {
+  0% {
+    transform: translateX(0) skewX(-18deg);
+    opacity: 0;
+  }
+  12%, 68% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(410%) skewX(-18deg);
+    opacity: 0;
+  }
+}
+
+@keyframes electric-arc-horizontal-reverse {
+  0% {
+    transform: translateX(0) skewX(18deg);
+    opacity: 0;
+  }
+  12%, 68% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-410%) skewX(18deg);
+    opacity: 0;
+  }
+}
+
+@keyframes electric-arc-vertical {
+  0% {
+    transform: translateY(0) skewY(-14deg);
+    opacity: 0;
+  }
+  12%, 68% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(410%) skewY(-14deg);
+    opacity: 0;
   }
 }
 
@@ -3969,7 +4139,7 @@ body.is-modal-open {
     grid-template-rows: 1fr;
     width: 100%;
     height: 100%;
-    padding: clamp(16px, 3.2vw, 26px) clamp(16px, 3.2vw, 24px) clamp(22px, 4vw, 36px);
+    /* padding: clamp(16px, 3.2vw, 26px) clamp(16px, 3.2vw, 24px) clamp(22px, 4vw, 36px); */
     overflow: hidden;
   }
 

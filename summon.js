@@ -6,15 +6,15 @@ const CONFIG = {
       id: "day1",
       date: "2026-07-25",
       start: "16:00",
-      end: "20:00",
-      code: "520mumain",
+      end: "22:00",
+      code: "水以沐，眠於焉",
     },
     {
       id: "day2",
       date: "2026-07-26",
       start: "16:00",
-      end: "20:00",
-      code: "如沐絮眠活動大成功",
+      end: "22:00",
+      code: "沐雨長眠墨未乾",
     },
   ],
   gemsPerCode: 1000,
@@ -31,12 +31,12 @@ const CONFIG = {
 };
 
 const RARITY_META = {
-  USR: { title: "烈疾風絮", color: "#ff6a45", glow: "rgba(255, 106, 69, 0.42)" },
-  UR: { title: "晝星期回", color: "#ffe08a", glow: "rgba(255, 224, 138, 0.36)" },
-  SSR: { title: "餘皆燼然", color: "#d7a4ff", glow: "rgba(215, 164, 255, 0.3)" },
-  SR: { title: "與回復響", color: "#80c8ff", glow: "rgba(128, 200, 255, 0.24)" },
-  S: { title: "燈火如晝", color: "#8dffb2", glow: "rgba(141, 255, 178, 0.2)" },
-  R: { title: "初見微光", color: "#d8c7ac", glow: "rgba(216, 199, 172, 0.16)" },
+  USR: { title: "烈疾風絮", color: "#fff2a6", glow: "rgba(255, 214, 78, 0.78)" },
+  UR: { title: "晝星期回", color: "#d7b7ff", glow: "rgba(183, 124, 255, 0.58)" },
+  SSR: { title: "餘皆燼然", color: "#ff8a3d", glow: "rgba(255, 87, 45, 0.56)" },
+  SR: { title: "與回復響", color: "#72f0cf", glow: "rgba(80, 226, 190, 0.42)" },
+  S: { title: "燈火如晝", color: "#ffd86a", glow: "rgba(255, 204, 76, 0.36)" },
+  R: { title: "初見微光", color: "#e8c888", glow: "rgba(232, 185, 98, 0.24)" },
 };
 
 const NORMAL_RATES = [
@@ -149,6 +149,10 @@ const modals = document.querySelectorAll("[data-modal]");
 const resultTabButtons = document.querySelectorAll("[data-result-tab]");
 
 const cards = createCards();
+const warmedEffectVideos = new Set();
+const loadedEffectVideos = new Set();
+const preloadedEffectVideoElements = new Map();
+const commonEffectRarities = ["R", "S", "SR", "SSR"];
 let clock = getLocalTaipeiClock();
 let state = loadState();
 let audioContext = null;
@@ -160,11 +164,16 @@ async function init() {
   const initialLoading = prepareInitialLoading();
   renderAll();
   queueAssetPreload();
+  queueEffectVideoWarmup();
+  if (state.gems >= CONFIG.drawCost) queueCommonEffectVideoPreload();
   syncServerTime();
   document.addEventListener("pointerdown", handlePointerSound);
   codeForm?.addEventListener("submit", handleCodeSubmit);
   drawButtons.forEach((button) => {
     button.addEventListener("click", () => handleDraw(Number(button.dataset.draw)));
+    button.addEventListener("pointerenter", queueEffectVideoWarmup, { once: true });
+    button.addEventListener("focus", queueEffectVideoWarmup, { once: true });
+    button.addEventListener("pointerdown", queueEffectVideoWarmup, { once: true });
   });
   modalOpenButtons.forEach((button) => {
     button.addEventListener("click", () => openModal(button.dataset.modalOpen));
@@ -217,6 +226,7 @@ function handleCodeSubmit(event) {
     setCodeMessage(`測試序號已注入 ${testCode.gems} 盞燈，測試抽卡已開啟至 ${formatDate(testCode.endDate)}。`, true);
     renderAll();
     playGemBurst();
+    queueCommonEffectVideoPreload();
     return;
   }
 
@@ -251,6 +261,7 @@ function handleCodeSubmit(event) {
   setCodeMessage("寶石注入成功，召令已被燈火記住。", true);
   renderAll();
   playGemBurst();
+  queueCommonEffectVideoPreload();
 }
 
 async function handleDraw(count) {
@@ -564,8 +575,6 @@ function renderFinalCard(card) {
         </div>
         <div class="cinematic-card-side cinematic-card-front">
           <img src="${card.image}" alt="${card.name}" onerror="this.onerror=null;this.src='${getFallbackCardImage(card.rarity)}';">
-          <b>${card.name}</b>
-          <span><strong>${card.rarity}</strong> ${meta.title}</span>
         </div>
       </div>
       <span class="electric-border" aria-hidden="true">
@@ -595,19 +604,33 @@ function playEffectVideo(rarity) {
   return new Promise((resolve) => {
     let resolved = false;
     let pauseGuard = true;
+    const needsBufferGuard = !loadedEffectVideos.has(source);
     const finish = () => {
       if (resolved) return;
       resolved = true;
       pauseGuard = false;
+      cinematic.classList.remove("is-buffering-video");
       cinematicVideo.removeEventListener("ended", finish);
       cinematicVideo.removeEventListener("error", finish);
       cinematicVideo.removeEventListener("pause", resumeIfInterrupted);
+      cinematicVideo.removeEventListener("canplay", startPlayback);
       resolve();
     };
     const resumeIfInterrupted = () => {
       if (!pauseGuard || resolved || cinematicVideo.ended) return;
       const resumePromise = cinematicVideo.play();
       if (resumePromise?.catch) resumePromise.catch(() => {});
+    };
+    const startPlayback = () => {
+      if (resolved) return;
+      loadedEffectVideos.add(source);
+      cinematic.classList.remove("is-buffering-video");
+      const playPromise = cinematicVideo.play();
+      if (playPromise?.catch) {
+        playPromise.catch(() => {
+          window.setTimeout(finish, 600);
+        });
+      }
     };
 
     cinematicVideo.src = source;
@@ -622,19 +645,22 @@ function playEffectVideo(rarity) {
     cinematicVideo.addEventListener("error", finish, { once: true });
     cinematicVideo.addEventListener("pause", resumeIfInterrupted);
 
-    const playPromise = cinematicVideo.play();
-    if (playPromise?.catch) {
-      playPromise.catch(() => {
-        window.setTimeout(finish, 600);
-      });
+    if (needsBufferGuard) {
+      if (cinematicText) cinematicText.textContent = "燈火凝聚中，卡影將現。";
+      cinematic.classList.add("is-buffering-video");
+      cinematicVideo.addEventListener("canplay", startPlayback, { once: true });
+      window.setTimeout(startPlayback, 900);
+      return;
     }
+
+    startPlayback();
   });
 }
 
 function cleanupCinematic() {
   if (!cinematic) return;
   cinematic.hidden = true;
-  cinematic.classList.remove("is-video-phase", "is-card-phase", "is-collecting");
+  cinematic.classList.remove("is-video-phase", "is-card-phase", "is-collecting", "is-buffering-video");
   if (cinematicCards) cinematicCards.innerHTML = "";
   if (cinematicFinal) cinematicFinal.innerHTML = "";
   if (cinematicVideo) {
@@ -698,12 +724,14 @@ async function prepareInitialLoading() {
   const revealDelay = 360;
   const maxWait = 4000;
   let completed = 0;
+  const isMobileLayout = window.matchMedia?.("(max-width: 900px)").matches;
+  const primaryBackground = isMobileLayout
+    ? "assets/card_interface/background＿mobile.webp"
+    : "assets/card_interface/background.webp";
   const assets = [
-    "assets/card_interface/background.webp",
-    "assets/bg_summon.webp",
+    primaryBackground,
     "assets/title.webp?v=2",
     "assets/card_interface/card.webp",
-    "assets/card_interface/cardbg-landscape.webp",
     "assets/card_interface/button.webp",
     "assets/icon_light.webp",
     "assets/bg_loading.webp",
@@ -740,21 +768,69 @@ function queueAssetPreload() {
 
 function preloadSummonAssets() {
   [
-    "assets/bg_summon.webp",
     "assets/cardbg.webp",
-    "assets/card_interface/card.webp",
-    "assets/title.webp?v=2",
-    "assets/icon_light.webp",
+    "assets/card_interface/cardbg-landscape.webp",
+    "assets/card_interface/flag.webp",
+    "assets/card_interface/icon_01.webp",
+    "assets/card_interface/icon_02.webp",
+    "assets/card_interface/icon_03.webp",
+    "assets/card_interface/icon_04.webp",
+    "assets/card_interface/icon_05.webp",
   ].forEach((source) => preloadImage(source));
+}
 
+function queueEffectVideoWarmup() {
+  const run = () => preloadEffectVideoMetadata();
+  if ("requestIdleCallback" in window) {
+    window.requestIdleCallback(run, { timeout: 900 });
+    return;
+  }
+  window.setTimeout(run, 180);
+}
+
+function preloadEffectVideoMetadata() {
   const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
   const isConstrained = Boolean(connection?.saveData) || /2g/.test(connection?.effectiveType || "");
+  if (isConstrained) return;
+
   Object.values(CARD_EFFECT_VIDEOS).forEach((source) => {
+    if (warmedEffectVideos.has(source)) return;
+    warmedEffectVideos.add(source);
     const video = document.createElement("video");
     video.muted = true;
     video.playsInline = true;
-    video.preload = isConstrained ? "metadata" : "auto";
+    video.preload = "metadata";
     video.src = source;
+    preloadedEffectVideoElements.set(`metadata:${source}`, video);
+    video.load();
+  });
+}
+
+function queueCommonEffectVideoPreload() {
+  const run = () => preloadCommonEffectVideos();
+  if ("requestIdleCallback" in window) {
+    window.requestIdleCallback(run, { timeout: 700 });
+    return;
+  }
+  window.setTimeout(run, 180);
+}
+
+function preloadCommonEffectVideos() {
+  const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+  const isConstrained = Boolean(connection?.saveData) || /2g/.test(connection?.effectiveType || "");
+  if (isConstrained) return;
+
+  commonEffectRarities.forEach((rarity) => {
+    const source = CARD_EFFECT_VIDEOS[rarity];
+    if (!source || loadedEffectVideos.has(source)) return;
+    const video = document.createElement("video");
+    video.muted = true;
+    video.playsInline = true;
+    video.preload = "auto";
+    video.src = source;
+    preloadedEffectVideoElements.set(`full:${source}`, video);
+    video.addEventListener("canplaythrough", () => loadedEffectVideos.add(source), { once: true });
+    video.addEventListener("canplay", () => loadedEffectVideos.add(source), { once: true });
     video.load();
   });
 }
