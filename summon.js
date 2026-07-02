@@ -8,6 +8,27 @@ const CONFIG = {
       start: "16:00",
       end: "22:00",
       code: "水以沐，眠於焉",
+      codes: [
+        {
+          id: "day1-main",
+          code: "水以沐，眠於焉",
+          gems: 1000,
+        },
+        {
+          id: "day1-thanks",
+          code: "鳴以致謝，晝而物新",
+          gems: 3000,
+          start: "00:00",
+          end: "24:00",
+        },
+        {
+          id: "day1-mumian",
+          code: "花草沐墨眠最棒",
+          gems: 5000,
+          start: "00:00",
+          end: "24:00",
+        },
+      ],
     },
     {
       id: "day2",
@@ -213,7 +234,7 @@ async function init() {
 async function syncServerTime() {
   try {
     const controller = new AbortController();
-    const timeoutId = window.setTimeout(() => controller.abort(), 3000);
+    const timeoutId = window.setTimeout(() => controller.abort(), 1500);
     const response = await fetch(CONFIG.timeApi, {
       cache: "no-store",
       signal: controller.signal,
@@ -247,24 +268,21 @@ function handleCodeSubmit(event) {
     return;
   }
 
-  const activeWindow = getActiveWindow();
+  const redeemTarget = getActiveRedeemCode(code);
 
-  if (!activeWindow) {
+  if (!redeemTarget) {
     if (isKnownTestCode(code)) {
       setCodeMessage("此測試序號目前不在有效日期內。", false);
       return;
     }
-    setCodeMessage("目前不在抽卡活動開放時段。", false);
+    setCodeMessage("目前沒有可兌換的召令序號。", false);
     return;
   }
 
-  if (code !== activeWindow.code) {
-    setCodeMessage("序號不符合今日召令，請確認後再輸入。", false);
-    return;
-  }
+  const { windowItem: activeWindow, codeItem: activeCode } = redeemTarget;
 
   const usedCodes = loadUsedCodes();
-  const codeFingerprint = fingerprint(`${activeWindow.id}:${activeWindow.code}`);
+  const codeFingerprint = fingerprint(`${activeWindow.id}:${activeCode.id}:${activeCode.code}`);
   if (usedCodes.includes(codeFingerprint)) {
     setCodeMessage("此序號已在本裝置兌換過。", false);
     return;
@@ -272,12 +290,12 @@ function handleCodeSubmit(event) {
 
   usedCodes.push(codeFingerprint);
   saveUsedCodes(usedCodes);
-  state.gems += CONFIG.gemsPerCode;
+  state.gems += activeCode.gems;
   saveState();
   codeInput.value = "";
-  setCodeMessage("盞燈注入成功，召令已被燈火記住。", true);
+  setCodeMessage(`盞燈注入成功，已領取 ${activeCode.gems} 盞燈。`, true);
   renderAll();
-  playGemBurst(CONFIG.gemsPerCode);
+  playGemBurst(activeCode.gems);
   queueCommonEffectVideoPreload();
 }
 
@@ -503,6 +521,43 @@ function getUpcomingWindow() {
     if (clock.date < windowItem.date) return true;
     return clock.date === windowItem.date && compareTime(clock.time, windowItem.end) < 0;
   }) || null;
+}
+
+function getActiveRedeemCode(code) {
+  for (const windowItem of CONFIG.windows) {
+    if (clock.date !== windowItem.date) continue;
+    const codeItem = getWindowCode(windowItem, code);
+    if (!codeItem) continue;
+    if (compareTime(clock.time, codeItem.start) < 0) continue;
+    if (compareTime(clock.time, codeItem.end) >= 0) continue;
+    return { windowItem, codeItem };
+  }
+
+  return null;
+}
+
+function getWindowCodes(windowItem) {
+  if (Array.isArray(windowItem.codes) && windowItem.codes.length) {
+    return windowItem.codes.map((item, index) => ({
+      id: item.id || `code-${index + 1}`,
+      code: item.code,
+      gems: Number(item.gems || CONFIG.gemsPerCode),
+      start: item.start || windowItem.start,
+      end: item.end || windowItem.end,
+    }));
+  }
+
+  return [{
+    id: "main",
+    code: windowItem.code,
+    gems: CONFIG.gemsPerCode,
+    start: windowItem.start,
+    end: windowItem.end,
+  }];
+}
+
+function getWindowCode(windowItem, code) {
+  return getWindowCodes(windowItem).find((item) => item.code === code) || null;
 }
 
 function getAvailableTestCode(code) {

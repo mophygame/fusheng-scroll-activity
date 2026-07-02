@@ -458,7 +458,7 @@ async function syncTaipeiDateFromServer() {
 
   try {
     const controller = new AbortController();
-    const timeoutId = window.setTimeout(() => controller.abort(), 3000);
+    const timeoutId = window.setTimeout(() => controller.abort(), 1500);
     const response = await fetch("https://worldtimeapi.org/api/timezone/Asia/Taipei", {
       cache: "no-store",
       signal: controller.signal,
