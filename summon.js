@@ -917,8 +917,9 @@ function playUiSound(type) {
   context.resume?.();
 
   if (type === "tap") {
-    playTone(context, 460, 0.025, 0.035, "triangle");
-    playTone(context, 920, 0.018, 0.02, "sine", 0.014);
+    playBellTone(context, 880, 0.105, 0.032);
+    playBellTone(context, 1320, 0.09, 0.018, 0.012);
+    playBellTone(context, 1760, 0.07, 0.01, 0.024);
     return;
   }
 
@@ -969,6 +970,26 @@ function playTone(context, frequency, duration, volume, type = "sine", delay = 0
   gain.connect(context.destination);
   oscillator.start(now);
   oscillator.stop(now + duration + 0.03);
+}
+
+function playBellTone(context, frequency, duration, volume, delay = 0) {
+  const oscillator = context.createOscillator();
+  const gain = context.createGain();
+  const filter = context.createBiquadFilter();
+  const now = context.currentTime + delay;
+  oscillator.type = "sine";
+  oscillator.frequency.setValueAtTime(frequency, now);
+  oscillator.frequency.exponentialRampToValueAtTime(frequency * 1.012, now + duration * 0.42);
+  filter.type = "highpass";
+  filter.frequency.setValueAtTime(520, now);
+  gain.gain.setValueAtTime(0.0001, now);
+  gain.gain.exponentialRampToValueAtTime(volume, now + 0.006);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+  oscillator.connect(filter);
+  filter.connect(gain);
+  gain.connect(context.destination);
+  oscillator.start(now);
+  oscillator.stop(now + duration + 0.025);
 }
 
 function getAudioContext() {
