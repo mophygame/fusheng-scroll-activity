@@ -2860,6 +2860,8 @@ body.is-modal-open {
 .card-preview-panel img {
   display: block;
   width: auto;
+  width: 100%;
+  height: 100%;
   max-width: min(84vw, 620px);
   max-height: min(76svh, 76vh);
   object-fit: contain;
@@ -3212,13 +3214,16 @@ body.is-card-preview-open {
 }
 
 .draw-cinematic.theme-ssr::before,
+.draw-cinematic.theme-ur::before,
 .draw-cinematic.theme-usr::before {
   background:
     radial-gradient(circle at 18% 80%, rgba(var(--summon-main), 0.82) 0 2px, transparent 3px),
     radial-gradient(circle at 34% 18%, rgba(var(--summon-second), 0.62) 0 2px, transparent 3px),
     radial-gradient(circle at 72% 68%, rgba(var(--summon-accent), 0.72) 0 2px, transparent 3px),
+    radial-gradient(circle at 52% 48%, rgba(var(--summon-accent), 0.9) 0 1px, transparent 3px),
     linear-gradient(68deg, transparent 0 42%, rgba(var(--summon-second), 0.26) 43% 45%, transparent 47% 100%);
-  background-size: 120px 120px, 190px 190px, 155px 155px, auto;
+  background-size: 120px 120px, 190px 190px, 155px 155px, 88px 88px, auto;
+  animation: summon-particle-burst 3.2s cubic-bezier(0.18, 0.74, 0.24, 1) both;
 }
 
 .draw-cinematic.theme-ur::after,
@@ -3235,6 +3240,7 @@ body.is-card-preview-open {
     radial-gradient(circle at 50% 50%, rgba(255, 255, 245, 0.78), transparent 16%),
     conic-gradient(from 0deg at 50% 50%, rgba(255, 255, 255, 0.3), transparent 9deg, rgba(255, 68, 38, 0.26) 15deg, transparent 24deg),
     radial-gradient(circle at 50% 50%, transparent 0 32%, rgba(255, 228, 130, 0.32) 33%, transparent 37%);
+  animation: summon-particle-burst 3.2s cubic-bezier(0.16, 0.8, 0.2, 1) both;
 }
 
 .draw-cinematic .cinematic-backdrop {
@@ -3313,12 +3319,14 @@ body.is-card-preview-open {
 }
 
 .draw-cinematic.theme-ssr .cinematic-stage,
+.draw-cinematic.theme-ur .cinematic-stage,
 .draw-cinematic.theme-usr .cinematic-stage {
   animation: cinematic-stage-in 360ms ease both, summon-impact-shake 900ms ease 900ms both;
 }
 
 .draw-cinematic.theme-usr .cinematic-stage {
   filter: saturate(1.25) brightness(1.18);
+  animation: cinematic-stage-in 360ms ease both, summon-divine-shake 1200ms ease 720ms both;
 }
 
 .cinematic-effect-video {
@@ -4107,12 +4115,43 @@ body.is-card-preview-open {
   }
 }
 
+@keyframes summon-particle-burst {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0) scale(0.72) rotate(0deg);
+    filter: blur(1px) brightness(1.4);
+  }
+  18% {
+    opacity: calc(var(--summon-particle) + 0.16);
+    transform: translate3d(0, 0, 0) scale(0.96) rotate(18deg);
+    filter: blur(0) brightness(1.8);
+  }
+  54% {
+    opacity: calc(var(--summon-particle) + 0.1);
+    transform: translate3d(0, -28px, 0) scale(1.24) rotate(78deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(0, -92px, 0) scale(1.72) rotate(148deg);
+    filter: blur(1.4px) brightness(1.15);
+  }
+}
+
 @keyframes summon-impact-shake {
   0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
   18% { transform: translate3d(8px, -3px, 0) scale(1.01); }
   34% { transform: translate3d(-7px, 5px, 0) scale(1.015); }
   48% { transform: translate3d(5px, 2px, 0) scale(1.01); }
   66% { transform: translate3d(-3px, -2px, 0) scale(1.005); }
+}
+
+@keyframes summon-divine-shake {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  12% { transform: translate3d(10px, -5px, 0) scale(1.018); }
+  24% { transform: translate3d(-11px, 6px, 0) scale(1.026); }
+  38% { transform: translate3d(7px, 4px, 0) scale(1.018); }
+  52% { transform: translate3d(-5px, -4px, 0) scale(1.012); }
+  70% { transform: translate3d(3px, 2px, 0) scale(1.006); }
 }
 
 @media (max-width: 460px) {
