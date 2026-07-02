@@ -2455,7 +2455,7 @@ button.info-pill {
 .pool-icons {
   display: flex;
   gap: clamp(12px, 1.5vw, 20px);
-  margin-left: clamp(40px, 7vw, 94px);
+  justify-content: center;
 }
 
 .pool-icons span {
