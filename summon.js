@@ -137,6 +137,7 @@ const loadingGate = document.querySelector(".loading-gate");
 const loadingProgress = document.querySelector(".loading-progress span");
 const loadingStatus = document.querySelector(".loading-status");
 const gemBurst = document.querySelector("[data-gem-burst]");
+const gemBurstAmount = document.querySelector("[data-gem-burst-amount]");
 const cinematic = document.querySelector("[data-cinematic]");
 const cinematicVideo = document.querySelector("[data-cinematic-video]");
 const cinematicCards = document.querySelector("[data-cinematic-cards]");
@@ -147,6 +148,11 @@ const modalOpenButtons = document.querySelectorAll("[data-modal-open]");
 const modalCloseButtons = document.querySelectorAll("[data-modal-close]");
 const modals = document.querySelectorAll("[data-modal]");
 const resultTabButtons = document.querySelectorAll("[data-result-tab]");
+const cardPreview = document.querySelector("[data-card-preview]");
+const cardPreviewImage = document.querySelector("[data-card-preview-image]");
+const cardPreviewName = document.querySelector("[data-card-preview-name]");
+const cardPreviewRarity = document.querySelector("[data-card-preview-rarity]");
+const cardPreviewCloseButtons = document.querySelectorAll("[data-card-preview-close]");
 
 const cards = createCards();
 const warmedEffectVideos = new Set();
@@ -184,11 +190,20 @@ async function init() {
       renderResults(loadResults());
     });
   });
+  resultsEl?.addEventListener("click", handleResultCardClick);
+  cardPreviewCloseButtons.forEach((button) => {
+    button.addEventListener("click", closeCardPreview);
+  });
   modalCloseButtons.forEach((button) => {
     button.addEventListener("click", closeActiveModal);
   });
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") closeActiveModal();
+    if (event.key !== "Escape") return;
+    if (cardPreview && !cardPreview.hidden) {
+      closeCardPreview();
+      return;
+    }
+    closeActiveModal();
   });
   await initialLoading;
 }
@@ -225,7 +240,7 @@ function handleCodeSubmit(event) {
     codeInput.value = "";
     setCodeMessage(`測試序號已注入 ${testCode.gems} 盞燈，測試抽卡已開啟至 ${formatDate(testCode.endDate)}。`, true);
     renderAll();
-    playGemBurst();
+    playGemBurst(testCode.gems);
     queueCommonEffectVideoPreload();
     return;
   }
@@ -258,9 +273,9 @@ function handleCodeSubmit(event) {
   state.gems += CONFIG.gemsPerCode;
   saveState();
   codeInput.value = "";
-  setCodeMessage("寶石注入成功，召令已被燈火記住。", true);
+  setCodeMessage("盞燈注入成功，召令已被燈火記住。", true);
   renderAll();
-  playGemBurst();
+  playGemBurst(CONFIG.gemsPerCode);
   queueCommonEffectVideoPreload();
 }
 
@@ -341,15 +356,21 @@ function renderResults(results, highlightCount = 0) {
   });
   visibleResults.forEach((card, index) => {
     const meta = RARITY_META[card.rarity];
-    const item = document.createElement("article");
+    const item = document.createElement("button");
+    const image = card.image || getFallbackCardImage(card.rarity);
     item.className = `summon-card rare-${card.rarity.toLowerCase()}`;
+    item.type = "button";
+    item.setAttribute("aria-label", `放大查看 ${card.name}`);
+    item.dataset.cardImage = image;
+    item.dataset.cardName = card.name;
+    item.dataset.cardRarity = card.rarity;
     item.style.setProperty("--rarity-color", meta.color);
     item.style.setProperty("--card-glow", meta.glow);
-    item.style.setProperty("--card-image", `url("${card.image}")`);
+    item.style.setProperty("--card-image", `url("${image}")`);
     item.style.animationDelay = `${Math.min(index, highlightCount - 1) * 80}ms`;
     item.innerHTML = `
       <div class="card-art">
-        <img src="${card.image}" alt="${card.name}" onerror="this.onerror=null;this.src='${getFallbackCardImage(card.rarity)}';">
+        <img src="${image}" alt="${card.name}" onerror="this.onerror=null;this.src='${getFallbackCardImage(card.rarity)}';">
       </div>
       <div class="card-rarity">${card.rarity}</div>
       <h3 class="card-name">${card.name}</h3>
@@ -368,6 +389,42 @@ function renderResultTabs(results) {
     button.setAttribute("aria-selected", String(isActive));
     button.textContent = `${getWindowLabel(tabId)} 抽卡紀錄（${Math.min(count, 10)}/10）`;
   });
+}
+
+function handleResultCardClick(event) {
+  const cardButton = event.target.closest(".summon-card");
+  if (!cardButton) return;
+  openCardPreview({
+    image: cardButton.dataset.cardImage,
+    name: cardButton.dataset.cardName,
+    rarity: cardButton.dataset.cardRarity,
+  });
+}
+
+function openCardPreview(card) {
+  if (!cardPreview || !cardPreviewImage) return;
+  const fallback = getFallbackCardImage(card.rarity);
+  cardPreviewImage.onerror = () => {
+    cardPreviewImage.onerror = null;
+    cardPreviewImage.src = fallback;
+  };
+  cardPreviewImage.src = card.image || fallback;
+  cardPreviewImage.alt = card.name ? `${card.name} 卡片大圖` : "卡片大圖";
+  if (cardPreviewName) cardPreviewName.textContent = card.name || "";
+  if (cardPreviewRarity) cardPreviewRarity.textContent = card.rarity || "";
+  cardPreview.hidden = false;
+  cardPreview.classList.add("is-open");
+  document.body.classList.add("is-card-preview-open");
+  window.setTimeout(() => {
+    cardPreview.querySelector("[data-card-preview-close]")?.focus();
+  }, 40);
+}
+
+function closeCardPreview() {
+  if (!cardPreview) return;
+  cardPreview.hidden = true;
+  cardPreview.classList.remove("is-open");
+  document.body.classList.remove("is-card-preview-open");
 }
 
 function normalizeResults(results) {
@@ -412,6 +469,7 @@ function openModal(name) {
 }
 
 function closeActiveModal() {
+  closeCardPreview();
   const openModalElement = [...modals].find((modal) => !modal.hidden);
   if (!openModalElement) return;
   openModalElement.classList.remove("is-open");
@@ -484,7 +542,8 @@ function createCards() {
       list.push({
         id: `${rarity}-${String(index + 1).padStart(2, "0")}`,
         rarity,
-        name: `${meta.title}・${suffix}`,
+        name: `${meta.title}`,
+        //name: `${meta.title}・${suffix}`,
         image: getCardImage(rarity, index),
       });
     }
@@ -497,8 +556,9 @@ function getCardImage(rarity, index) {
   return `assets/cards/${rarity}-${serial}.webp`;
 }
 
-function playGemBurst() {
+function playGemBurst(amount = CONFIG.gemsPerCode) {
   if (!gemBurst) return;
+  if (gemBurstAmount) gemBurstAmount.textContent = `+${amount}`;
   playUiSound("gem");
   gemBurst.hidden = false;
   window.setTimeout(() => {

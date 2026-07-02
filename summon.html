@@ -154,12 +154,25 @@
     </div>
   </section>
 
+  <section class="card-preview-modal" data-card-preview hidden aria-label="卡片大圖預覽">
+    <button class="card-preview-backdrop" type="button" data-card-preview-close aria-label="關閉卡片大圖"></button>
+    <div class="card-preview-panel">
+      <button class="card-preview-close" type="button" data-card-preview-close aria-label="關閉">×</button>
+      <img data-card-preview-image src="" alt="">
+      <div class="card-preview-caption">
+        <strong data-card-preview-rarity></strong>
+        <span data-card-preview-name></span>
+      </div>
+    </div>
+  </section>
+
   <div class="gem-burst" data-gem-burst hidden>
     <div class="gem-burst-backdrop"></div>
     <div class="gem-burst-panel">
-      <span class="gem-core"></span>
-      <strong>+1000</strong>
-      <p>寶石注入完成</p>
+      <img src="assets/icon_light.webp" alt="">
+      <!-- <span class="gem-core"></span> -->
+      <strong data-gem-burst-amount>+1000</strong>
+      <p>盞燈注入完成</p>
     </div>
   </div>
 

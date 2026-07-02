@@ -641,11 +641,27 @@ a {
   min-height: 0;
   padding: 14px 14px 18px;
   overflow: hidden;
+  cursor: zoom-in;
+  color: inherit;
+  text-align: left;
+  border: 0;
   background:
     radial-gradient(circle at 50% 18%, var(--card-glow), transparent 46%),
     linear-gradient(160deg, rgba(18, 12, 9, 0.96), rgba(4, 4, 4, 0.96));
   box-shadow: inset 0 0 26px rgba(255, 255, 255, 0.06), 0 20px 44px rgba(0, 0, 0, 0.32), 0 0 28px var(--card-glow);
   animation: card-reveal 620ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  transition: transform 220ms ease, box-shadow 220ms ease, filter 220ms ease;
+}
+
+.summon-card:hover,
+.summon-card:focus-visible {
+  transform: translateY(-4px);
+  filter: brightness(1.08);
+  outline: none;
+  box-shadow:
+    inset 0 0 26px rgba(255, 255, 255, 0.08),
+    0 24px 52px rgba(0, 0, 0, 0.38),
+    0 0 42px var(--card-glow);
 }
 
 .summon-card::before {
@@ -824,7 +840,12 @@ a {
   background: rgba(8, 6, 5, 0.92);
   animation: burst-in 1500ms ease both;
 }
+.gem-burst-panel img{
+  width: 150px;
+  height: 150px;
+  aspect-ratio: 1;
 
+}
 .gem-core {
   width: 86px;
   height: 86px;
@@ -1547,6 +1568,11 @@ a {
   backdrop-filter: blur(8px);
   font-size: 0.78rem;
   letter-spacing: 0.12em;
+  display: flex;
+  width: 75px;
+  height: 75px;
+  justify-content: center;
+  align-items: center;
 }
 .summon-back:hover,.summon-back:focus,.summon-back:active{
     background: url(assets/card_interface/button_card_hover.webp) center center;
@@ -2439,9 +2465,7 @@ button.info-pill {
   width: 100%;
   text-align: center;
   padding: 8px;
-/*   margin: 0 0 28px clamp(54px, 8vw, 108px);
-  padding: 12px clamp(34px, 5vw, 76px); */
-  color: #e8dac5;
+  color: #e8dac5e1;
   border-top: 1px solid rgba(176, 96, 74, 0.58);
   border-bottom: 1px solid rgba(176, 96, 74, 0.58);
   background: url(assets/card_interface/bg_subtitle.webp) center center;
@@ -2586,10 +2610,11 @@ button.info-pill {
 
 .card-pool .draw-button small {
   gap: 12px;
-  margin-top: 8px;
   color: #4c3024;
   font-size: clamp(1rem, 1.6vw, 1.28rem);
   letter-spacing: 0.18em;
+  margin-top: 0px;
+  margin-right: 19px;
 }
 
 .card-pool .draw-button small img {
@@ -2786,6 +2811,100 @@ button.info-pill {
 }
 
 body.is-modal-open {
+  overflow: hidden;
+}
+
+.card-preview-modal[hidden] {
+  display: none;
+}
+
+.card-preview-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 380;
+  display: grid;
+  place-items: center;
+  padding: max(18px, env(safe-area-inset-top)) max(18px, env(safe-area-inset-right)) max(18px, env(safe-area-inset-bottom)) max(18px, env(safe-area-inset-left));
+}
+
+.card-preview-backdrop {
+  position: absolute;
+  inset: 0;
+  cursor: zoom-out;
+  border: 0;
+  background:
+    radial-gradient(circle at 50% 45%, rgba(213, 121, 50, 0.22), transparent 34%),
+    rgba(0, 0, 0, 0.82);
+  backdrop-filter: blur(9px);
+}
+
+.card-preview-panel {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: min(92vw, 720px);
+  max-height: min(92svh, 92vh);
+  padding: clamp(18px, 3vw, 30px);
+  border: 1px solid rgba(226, 176, 104, 0.58);
+  background:
+    radial-gradient(circle at 50% 20%, rgba(255, 202, 111, 0.12), transparent 32%),
+    linear-gradient(160deg, rgba(27, 10, 8, 0.92), rgba(4, 4, 6, 0.96));
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 231, 180, 0.08),
+    inset 0 0 80px rgba(0, 0, 0, 0.58),
+    0 30px 100px rgba(0, 0, 0, 0.72);
+  animation: summon-modal-in 220ms ease both;
+}
+
+.card-preview-panel img {
+  display: block;
+  width: auto;
+  max-width: min(84vw, 620px);
+  max-height: min(76svh, 76vh);
+  object-fit: contain;
+  filter: drop-shadow(0 0 26px rgba(243, 180, 94, 0.26));
+}
+
+.card-preview-close {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  z-index: 2;
+  width: 38px;
+  height: 38px;
+  cursor: pointer;
+  color: #f6d9aa;
+  border: 1px solid rgba(226, 176, 104, 0.52);
+  border-radius: 50%;
+  background: rgba(38, 13, 10, 0.88);
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.card-preview-caption {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  margin-top: 14px;
+  color: rgba(245, 225, 194, 0.86);
+  text-align: center;
+  letter-spacing: 0.08em;
+}
+
+.card-preview-caption strong {
+  color: #f4c96e;
+  font-size: clamp(1rem, 2.6vw, 1.3rem);
+  letter-spacing: 0.18em;
+}
+
+.card-preview-caption span {
+  font-size: clamp(0.92rem, 2.4vw, 1.12rem);
+}
+
+body.is-card-preview-open {
   overflow: hidden;
 }
 
@@ -4296,9 +4415,6 @@ body.is-modal-open {
     background: url(assets/card_interface/button_card.webp) center center;
     background-size: cover;
     background-repeat: no-repeat;
-    box-shadow:
-      0 0 0 1px rgba(255, 221, 151, 0.14) inset,
-      0 0 20px rgba(180, 88, 35, 0.18);
     font-size: clamp(0.82rem, 3.1vw, 1.15rem);
     font-weight: 600;
     line-height: 1.22;
@@ -4396,7 +4512,6 @@ body.is-modal-open {
     width: clamp(42px, 11vw, 68px);
     min-height: clamp(210px, 34vh, 350px);
     margin-top: clamp(22px, 4vh, 54px);
-    color: rgba(246, 229, 205, 0.9);
     letter-spacing: 0.18em;
     z-index: 3;
   }
@@ -4484,7 +4599,8 @@ body.is-modal-open {
 
   .card-pool .draw-button small {
     gap: 6px;
-    margin-top: 4px;
+    margin-top: 0px;
+    margin-right: 19px;
     font-size: clamp(0.76rem, 3.1vw, 1rem);
     letter-spacing: 0.06em;
   }
@@ -4723,6 +4839,26 @@ body.is-modal-open {
   }
 }
 
+@media (max-width: 640px) {
+  .card-preview-modal {
+    padding: max(12px, env(safe-area-inset-top)) max(10px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left));
+  }
+
+  .card-preview-panel {
+    width: min(94vw, 430px);
+    padding: 16px 12px 14px;
+  }
+
+  .card-preview-panel img {
+    max-width: 90vw;
+    max-height: 78svh;
+  }
+
+  .card-preview-caption {
+    margin-top: 10px;
+  }
+}
+
 @media (min-width: 480px) and (max-width: 900px) {
   .summon-layout {
     height: 100svh;
@@ -4765,7 +4901,7 @@ body.is-modal-open {
   }
 
   .pool-flag span {
-    font-size: clamp(0.94rem, 2.2vw, 1.12rem);
+    font-size: clamp(0.7rem, 0.8rem, 1.12rem);
   }
 
   .pool-card-preview {
