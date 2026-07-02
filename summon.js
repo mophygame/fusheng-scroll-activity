@@ -8,27 +8,6 @@ const CONFIG = {
       start: "16:00",
       end: "22:00",
       code: "水以沐，眠於焉",
-      codes: [
-        {
-          id: "day1-main",
-          code: "水以沐，眠於焉",
-          gems: 1000,
-        },
-        {
-          id: "day1-thanks",
-          code: "鳴以致謝，晝而物新",
-          gems: 3000,
-          start: "00:00",
-          end: "24:00",
-        },
-        {
-          id: "day1-mumian",
-          code: "花草沐墨眠最棒",
-          gems: 5000,
-          start: "00:00",
-          end: "24:00",
-        },
-      ],
     },
     {
       id: "day2",
@@ -36,6 +15,24 @@ const CONFIG = {
       start: "16:00",
       end: "22:00",
       code: "沐雨長眠墨未乾",
+    },
+  ],
+  redeemCodes: [
+    {
+      id: "day3-thanks",
+      date: "2026-07-27",
+      start: "00:00",
+      end: "24:00",
+      code: "鳴以致謝，晝而物新",
+      gems: 3000,
+    },
+    {
+      id: "day3-mumian",
+      date: "2026-07-27",
+      start: "00:00",
+      end: "24:00",
+      code: "花草沐墨眠最棒",
+      gems: 5000,
     },
   ],
   gemsPerCode: 1000,
@@ -531,6 +528,20 @@ function getActiveRedeemCode(code) {
     if (compareTime(clock.time, codeItem.start) < 0) continue;
     if (compareTime(clock.time, codeItem.end) >= 0) continue;
     return { windowItem, codeItem };
+  }
+
+  for (const codeItem of CONFIG.redeemCodes || []) {
+    if (clock.date !== codeItem.date) continue;
+    if (code !== codeItem.code) continue;
+    if (compareTime(clock.time, codeItem.start) < 0) continue;
+    if (compareTime(clock.time, codeItem.end) >= 0) continue;
+    return {
+      windowItem: {
+        id: `redeem-${codeItem.date}`,
+        date: codeItem.date,
+      },
+      codeItem,
+    };
   }
 
   return null;
