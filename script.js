@@ -278,9 +278,22 @@ function playBackgroundMusic(options = {}) {
 function startIntroBackgroundMusic() {
   playBackgroundMusic({
     restart: true,
-    startVolume: 0,
+    startVolume: 0.08,
     volume: bgMusicTargetVolume,
-    fadeDuration: 2450,
+    fadeDuration: 2200,
+  });
+}
+
+function ensureIntroMusicAudible() {
+  if (!bgMusic) return;
+  if (!bgMusic.paused && bgMusic.volume > 0.01) {
+    setMusicState(true);
+    return;
+  }
+  playBackgroundMusic({
+    startVolume: Math.max(bgMusic.volume, 0.08),
+    volume: bgMusicTargetVolume,
+    fadeDuration: 420,
   });
 }
 
@@ -334,6 +347,7 @@ function completeIntroSlider() {
 
   window.setTimeout(() => {
     document.body.classList.remove("is-intro-open");
+    ensureIntroMusicAudible();
   }, 2450);
 
   window.setTimeout(() => {
