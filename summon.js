@@ -58,8 +58,8 @@ const CARD_COUNTS = {
   USR: 1,
   UR: 2,
   SSR: 7,
-  SR: 15,
-  S: 15,
+  SR: 5,
+  S: 5,
   R: 50,
 };
 
@@ -113,8 +113,7 @@ const CINEMATIC_COPY = {
   USR: "烈風捲絮，白金神光照徹長夜。",
 };
 
-const CDN_BASE = "https://cdn.jsdelivr.net/gh/mophygame/fusheng-scroll-activity@main/";
-const assetUrl = (path) => `${CDN_BASE}${path}`;
+const assetUrl = (path) => path;
 
 const CARD_EFFECT_VIDEOS = {
   R: assetUrl("assets/card-effect-R.mp4"),
