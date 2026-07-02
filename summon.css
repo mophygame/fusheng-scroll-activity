@@ -1614,7 +1614,11 @@ a {
   box-shadow: inset 0 0 18px rgba(255, 220, 150, 0.06), 0 12px 30px rgba(0, 0, 0, 0.26);
   backdrop-filter: blur(7px);
 }
-
+.summon-top-actions .info-pill:hover,.summon-top-actions .info-pill:focus,.summon-top-actions .info-pill:active{
+  background: url(assets/card_interface/button_card_hover.webp) center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
 .gem-counter {
   gap: 6px;
 }
@@ -4302,11 +4306,6 @@ body.is-modal-open {
     text-align: center;
     white-space: normal;
     pointer-events: auto;
-  }
-  .summon-top-actions .info-pill:hover,.summon-top-actions .info-pill:focus,.summon-top-actions .info-pill:active{
-    background: url(assets/card_interface/button_card_hover.webp) center center;
-    background-size: cover;
-    background-repeat: no-repeat;
   }
   .summon-top-actions .info-pill[data-modal-open="rules"] {
     top: max(22px, calc(env(safe-area-inset-top) + 10px));
