@@ -3,6 +3,8 @@ const countdownLabel = document.querySelector("[data-countdown-label]");
 const countdownOpenLink = document.querySelector(".countdown-open-link");
 const characterOpenLinks = document.querySelectorAll("[data-character-link]");
 const linkConfig = window.DENGZHOU_LINKS || {};
+const CDN_BASE = "https://cdn.jsdelivr.net/gh/mophygame/fusheng-scroll-activity@main/";
+const assetUrl = (path) => `${CDN_BASE}${path}`;
 const lanternGrid = document.querySelector("[data-lantern-grid]");
 const lanternStatus = document.querySelector("[data-lantern-status]");
 const lanternIgnite = document.querySelector(".lantern-ignite");
@@ -177,8 +179,8 @@ function warmSecondaryAssets() {
   if (secondaryWarmStarted) return;
   secondaryWarmStarted = true;
   secondaryAssets.forEach((src) => preloadImage(src));
-  preloadVideoMetadata("assets/ancient.mp4");
-  preloadVideoMetadata("assets/modern.mp4");
+  preloadVideoMetadata(assetUrl("assets/ancient.mp4"));
+  preloadVideoMetadata(assetUrl("assets/modern.mp4"));
 }
 
 function scheduleSecondaryWarmup() {

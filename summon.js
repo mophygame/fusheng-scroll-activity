@@ -113,13 +113,16 @@ const CINEMATIC_COPY = {
   USR: "烈風捲絮，白金神光照徹長夜。",
 };
 
+const CDN_BASE = "https://cdn.jsdelivr.net/gh/mophygame/fusheng-scroll-activity@main/";
+const assetUrl = (path) => `${CDN_BASE}${path}`;
+
 const CARD_EFFECT_VIDEOS = {
-  R: "assets/card-effect-R.mp4",
-  S: "assets/card-effect-S.mp4",
-  SR: "assets/card-effect-SR.mp4",
-  SSR: "assets/card-effect-SSR.mp4",
-  UR: "assets/card-effect-UR.mp4",
-  USR: "assets/card-effect-USR.mp4",
+  R: assetUrl("assets/card-effect-R.mp4"),
+  S: assetUrl("assets/card-effect-S.mp4"),
+  SR: assetUrl("assets/card-effect-SR.mp4"),
+  SSR: assetUrl("assets/card-effect-SSR.mp4"),
+  UR: assetUrl("assets/card-effect-UR.mp4"),
+  USR: assetUrl("assets/card-effect-USR.mp4"),
 };
 
 const stateKey = makeKey("state");
