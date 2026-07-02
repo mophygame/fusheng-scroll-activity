@@ -278,9 +278,9 @@ function playBackgroundMusic(options = {}) {
 function startIntroBackgroundMusic() {
   playBackgroundMusic({
     restart: true,
-    startVolume: 0.08,
+    startVolume: bgMusicTargetVolume,
     volume: bgMusicTargetVolume,
-    fadeDuration: 2200,
+    fadeDuration: 0,
   });
 }
 
