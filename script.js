@@ -5,6 +5,8 @@ const characterOpenLinks = document.querySelectorAll("[data-character-link]");
 const linkConfig = window.DENGZHOU_LINKS || {};
 const lanternGrid = document.querySelector("[data-lantern-grid]");
 const lanternStatus = document.querySelector("[data-lantern-status]");
+const lanternIgnite = document.querySelector(".lantern-ignite");
+const lanternIgniteTitle = document.querySelector("#lantern-ignite-title");
 const lanternDialog = document.querySelector(".lantern-dialog");
 const lanternDialogTitle = document.querySelector("#lantern-dialog-title");
 const lanternDialogImage = document.querySelector(".lantern-dialog-image");
@@ -487,13 +489,59 @@ function formatLanternDate(dateString) {
   return `${Number(month)}/${Number(day)}`;
 }
 
+function setLanternStatus(message, detail = "") {
+  if (!lanternStatus) return;
+  lanternStatus.textContent = "";
+  const messageLine = document.createElement("span");
+  messageLine.textContent = message;
+  lanternStatus.append(messageLine);
+
+  if (detail) {
+    const detailLine = document.createElement("span");
+    detailLine.className = "daily-lantern-status-line";
+    detailLine.textContent = detail;
+    lanternStatus.append(detailLine);
+  }
+
+  if (serverTaipeiDateString) {
+    const syncedLine = document.createElement("span");
+    syncedLine.className = "daily-lantern-status-line";
+    syncedLine.textContent = "（時間已依台北線上時間校正）";
+    lanternStatus.append(syncedLine);
+  }
+}
+
+function playLanternIgnition(lantern) {
+  return new Promise((resolve) => {
+    if (!lanternIgnite) {
+      resolve();
+      return;
+    }
+
+    if (lanternIgniteTitle) lanternIgniteTitle.textContent = `點燃${lantern.title}`;
+    lanternIgnite.hidden = false;
+    document.body.style.overflow = "hidden";
+    window.requestAnimationFrame(() => {
+      lanternIgnite.classList.add("is-playing");
+    });
+
+    window.setTimeout(() => {
+      lanternIgnite.classList.remove("is-playing");
+      lanternIgnite.hidden = true;
+      resolve();
+    }, 1250);
+  });
+}
+
 function openLanternDialog(lantern) {
   if (!lanternDialog || !lanternDialogImage || !lanternDialogDownload) return;
 
   if (lanternDialogTitle) lanternDialogTitle.textContent = `${lantern.name} · ${lantern.title}`;
   lanternDialogImage.src = lantern.image;
   lanternDialogImage.alt = `${lantern.name}角色照片`;
-  if (lanternDialogCaption) lanternDialogCaption.textContent = `${formatLanternDate(lantern.date)} 已點亮，收下 ${lantern.name} 的燈影。`;
+  if (lanternDialogCaption) {
+    lanternDialogCaption.innerHTML = `<span>${formatLanternDate(lantern.date)} 已點亮</span><span>收下 ${lantern.name} 的燈影。</span>`;
+  }
   lanternDialogDownload.href = lantern.image;
   lanternDialogDownload.download = lantern.downloadName || `${lantern.name}.webp`;
   lanternDialogDownload.dataset.downloadUrl = lantern.image;
@@ -547,20 +595,17 @@ function renderDailyLanterns() {
   const todayLantern = lanterns.find((lantern) => isLanternToday(lantern, todayString));
   const litCount = lanterns.filter((_, index) => litLanterns.has(String(index + 1))).length;
   const missedCount = lanterns.filter((lantern, index) => isLanternPast(lantern, todayString) && !litLanterns.has(String(index + 1))).length;
-
-  if (lanternStatus) {
-    if (todayString < lanterns[0].date) {
-      lanternStatus.textContent = "燈火尚未抵達，請於 07/03 回來點燈。";
-    } else if (todayLantern) {
-      lanternStatus.textContent = `${formatLanternDate(todayLantern.date)} 請點選今日天燈「${todayLantern.title}」完成點亮。錯過的天燈不能補點，已點亮的燈會為你留著。`;
-    } else if (todayString > lanterns[lanterns.length - 1].date) {
-      lanternStatus.textContent = `七日點燈已結束。已點亮 ${litCount} 盞，錯過 ${missedCount} 盞。`;
-    } else {
-      lanternStatus.textContent = "今日沒有新天燈，已點亮的燈仍可再次查看。";
-    }
-    if (serverTaipeiDateString) {
-      lanternStatus.textContent += "（時間已依台北線上時間校正）";
-    }
+  if (todayString < lanterns[0].date) {
+    setLanternStatus("燈火尚未抵達，請於 07/03 回來點燈。");
+  } else if (todayLantern) {
+    setLanternStatus(
+      `請輕觸點燃今日的『${todayLantern.title}』。`,
+      "錯過的燈火無法重燃，已點亮的祈願，則為你長明不滅。"
+    );
+  } else if (todayString > lanterns[lanterns.length - 1].date) {
+    setLanternStatus(`七日點燈已結束。已點亮 ${litCount} 盞，錯過 ${missedCount} 盞。`);
+  } else {
+    setLanternStatus("今日沒有新天燈，已點亮的燈仍可再次查看。");
   }
 
   lanternGrid.innerHTML = "";
@@ -587,13 +632,16 @@ function renderDailyLanterns() {
       <span class="daily-lantern-action">${isLit ? "已點亮" : isToday ? "點亮天燈" : isMissed ? "已錯過" : "尚未開放"}</span>
     `;
 
-    button.addEventListener("click", (event) => {
+    button.addEventListener("click", async (event) => {
       if (!canOpen) return;
+      let shouldPlayIgnition = false;
       if (!isLit && isToday && event.isTrusted) {
         litLanterns.add(lanternId);
         saveLitLanterns(litLanterns);
         renderDailyLanterns();
+        shouldPlayIgnition = true;
       }
+      if (shouldPlayIgnition) await playLanternIgnition(lantern);
       openLanternDialog(lantern);
     });
 
