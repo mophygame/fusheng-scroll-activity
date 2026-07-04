@@ -1489,6 +1489,10 @@ button {
 
 .daily-lantern-status-line {
   display: block;
+  margin-top: 3px;
+  color: rgba(233, 226, 211, 0.56);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
 }
 
 .daily-lantern-notice {
