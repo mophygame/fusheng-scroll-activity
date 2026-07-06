@@ -145,6 +145,19 @@
       <p class="hero-index">大封十年 · 歷史驟變</p>
     </section>
 
+    <section class="daily-lanterns section" id="daily-lanterns" aria-labelledby="daily-lanterns-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">SEVEN LANTERNS · 七日點燈</p>
+          <h2 id="daily-lanterns-title">日復燃新，<br><em>猶見故人。</em></h2>
+        </div>
+        <p class="section-note">2026.07.03 起，每日點亮一盞天燈，收下一張角色照片。</p>
+      </div>
+      <div class="daily-lantern-status" data-lantern-status>燈火尚未抵達，請於 07/03 回來點燈。</div>
+      <div class="daily-lantern-grid" data-lantern-grid aria-label="七日天燈列表"></div>
+      <p class="daily-lantern-notice">此系列圖為本創作團隊之回饋紀念，為維護角色形象一致性，<span class="forbidden-text">嚴禁二創</span>，煩請配合。</p>
+    </section>
+
     <section class="world section" id="world">
       <div class="section-number">01</div>
       <div class="world-title">
@@ -392,6 +405,20 @@
         <p class="reward-dialog-desc">專屬互動破關網頁，讓你查看每個角色的秘密情話與大封王朝的完整歷史篇章。</p>
       </div>
       <button class="reward-dialog-confirm" type="button">闔碑</button>
+    </div>
+  </div>
+
+  <div class="lantern-dialog" role="dialog" aria-modal="true" aria-labelledby="lantern-dialog-title" hidden>
+    <div class="lantern-dialog-backdrop"></div>
+    <div class="lantern-dialog-panel">
+      <button class="lantern-dialog-close" type="button" aria-label="關閉">×</button>
+      <p class="eyebrow lantern-dialog-kicker">燈影已現</p>
+      <h2 id="lantern-dialog-title">今日角色照片</h2>
+      <figure class="lantern-dialog-figure">
+        <img class="lantern-dialog-image" src="" alt="">
+        <figcaption class="lantern-dialog-caption">點亮天燈，收下此刻相逢。</figcaption>
+      </figure>
+      <a class="lantern-dialog-download" href="#" download>下載角色照片</a>
     </div>
   </div>
 

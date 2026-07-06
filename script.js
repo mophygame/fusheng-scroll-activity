@@ -3,6 +3,13 @@ const countdownLabel = document.querySelector("[data-countdown-label]");
 const countdownOpenLink = document.querySelector(".countdown-open-link");
 const characterOpenLinks = document.querySelectorAll("[data-character-link]");
 const linkConfig = window.DENGZHOU_LINKS || {};
+const lanternGrid = document.querySelector("[data-lantern-grid]");
+const lanternStatus = document.querySelector("[data-lantern-status]");
+const lanternDialog = document.querySelector(".lantern-dialog");
+const lanternDialogTitle = document.querySelector("#lantern-dialog-title");
+const lanternDialogImage = document.querySelector(".lantern-dialog-image");
+const lanternDialogCaption = document.querySelector(".lantern-dialog-caption");
+const lanternDialogDownload = document.querySelector(".lantern-dialog-download");
 
 const loadingGate = document.querySelector(".loading-gate");
 const loadingProgress = document.querySelector(".loading-progress span");
@@ -19,6 +26,7 @@ let introDragging = false;
 let shouldResumeMusicAfterVideo = false;
 let activeMusicPausingVideo = null;
 let bgMusicFadeFrame = null;
+let serverTaipeiDateString = null;
 
 function applyLinkConfig() {
   if (countdownOpenLink && linkConfig.collection) {
@@ -159,6 +167,8 @@ const secondaryAssets = [
   "assets/icon_play.webp",
   "assets/icon_mute.webp",
   "assets/icon_light.webp",
+  "assets/bg_people2.webp",
+  "assets/bg_people3.webp",
 ];
 
 function warmSecondaryAssets() {
@@ -409,6 +419,194 @@ function updateCountdown() {
 
 updateCountdown();
 setInterval(updateCountdown, 1000);
+
+const lanternStorageKey = "dengzhou-lit-lanterns";
+const lanterns = Array.isArray(linkConfig.dailyLanterns) ? linkConfig.dailyLanterns.slice(0, 7) : [];
+
+function getTaipeiDateString(date = new Date()) {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Taipei",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(date);
+}
+
+function getCurrentTaipeiDateString() {
+  return serverTaipeiDateString || getTaipeiDateString();
+}
+
+async function syncTaipeiDateFromServer() {
+  if (!lanternGrid || !lanterns.length) return;
+
+  try {
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => controller.abort(), 3000);
+    const response = await fetch("https://worldtimeapi.org/api/timezone/Asia/Taipei", {
+      cache: "no-store",
+      signal: controller.signal,
+    });
+    window.clearTimeout(timeoutId);
+    if (!response.ok) throw new Error("Time API unavailable");
+
+    const data = await response.json();
+    const datetime = typeof data.datetime === "string" ? data.datetime : "";
+    const datePart = datetime.slice(0, 10);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(datePart)) throw new Error("Invalid time API response");
+
+    serverTaipeiDateString = datePart;
+    renderDailyLanterns();
+  } catch {
+    serverTaipeiDateString = null;
+  }
+}
+
+function readLitLanterns() {
+  try {
+    const value = JSON.parse(localStorage.getItem(lanternStorageKey) || "[]");
+    return Array.isArray(value) ? new Set(value) : new Set();
+  } catch {
+    return new Set();
+  }
+}
+
+function saveLitLanterns(litLanterns) {
+  localStorage.setItem(lanternStorageKey, JSON.stringify([...litLanterns]));
+}
+
+function isLanternToday(lantern, todayString) {
+  return lantern.date === todayString;
+}
+
+function isLanternPast(lantern, todayString) {
+  return lantern.date < todayString;
+}
+
+function formatLanternDate(dateString) {
+  const [, month, day] = dateString.split("-");
+  return `${Number(month)}/${Number(day)}`;
+}
+
+function openLanternDialog(lantern) {
+  if (!lanternDialog || !lanternDialogImage || !lanternDialogDownload) return;
+
+  if (lanternDialogTitle) lanternDialogTitle.textContent = `${lantern.name} · ${lantern.title}`;
+  lanternDialogImage.src = lantern.image;
+  lanternDialogImage.alt = `${lantern.name}角色照片`;
+  if (lanternDialogCaption) lanternDialogCaption.textContent = `${formatLanternDate(lantern.date)} 已點亮，收下 ${lantern.name} 的燈影。`;
+  lanternDialogDownload.href = lantern.image;
+  lanternDialogDownload.download = lantern.downloadName || `${lantern.name}.webp`;
+  lanternDialogDownload.dataset.downloadUrl = lantern.image;
+  lanternDialogDownload.dataset.downloadName = lantern.downloadName || `${lantern.name}.webp`;
+  lanternDialog.hidden = false;
+  document.body.style.overflow = "hidden";
+  lanternDialog.querySelector(".lantern-dialog-close")?.focus();
+}
+
+async function downloadLanternImage(event) {
+  event.preventDefault();
+  const downloadUrl = lanternDialogDownload?.dataset.downloadUrl;
+  const downloadName = lanternDialogDownload?.dataset.downloadName || "dengzhou-lantern.webp";
+  if (!downloadUrl) return;
+
+  try {
+    const response = await fetch(downloadUrl);
+    if (!response.ok) throw new Error("Image download failed");
+    const blob = await response.blob();
+    const objectUrl = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = objectUrl;
+    link.download = downloadName;
+    link.style.display = "none";
+    document.body.append(link);
+    link.click();
+    link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
+  } catch {
+    const link = document.createElement("a");
+    link.href = downloadUrl;
+    link.download = downloadName;
+    link.style.display = "none";
+    document.body.append(link);
+    link.click();
+    link.remove();
+  }
+}
+
+function closeLanternDialog() {
+  if (!lanternDialog) return;
+  lanternDialog.hidden = true;
+  document.body.style.overflow = "";
+}
+
+function renderDailyLanterns() {
+  if (!lanternGrid || !lanterns.length) return;
+
+  const todayString = getCurrentTaipeiDateString();
+  const litLanterns = readLitLanterns();
+  const todayLantern = lanterns.find((lantern) => isLanternToday(lantern, todayString));
+  const litCount = lanterns.filter((_, index) => litLanterns.has(String(index + 1))).length;
+  const missedCount = lanterns.filter((lantern, index) => isLanternPast(lantern, todayString) && !litLanterns.has(String(index + 1))).length;
+
+  if (lanternStatus) {
+    if (todayString < lanterns[0].date) {
+      lanternStatus.textContent = "燈火尚未抵達，請於 07/03 回來點燈。";
+    } else if (todayLantern) {
+      lanternStatus.textContent = `${formatLanternDate(todayLantern.date)} 請點選今日天燈「${todayLantern.title}」完成點亮。錯過的天燈不能補點，已點亮的燈會為你留著。`;
+    } else if (todayString > lanterns[lanterns.length - 1].date) {
+      lanternStatus.textContent = `七日點燈已結束。已點亮 ${litCount} 盞，錯過 ${missedCount} 盞。`;
+    } else {
+      lanternStatus.textContent = "今日沒有新天燈，已點亮的燈仍可再次查看。";
+    }
+    if (serverTaipeiDateString) {
+      lanternStatus.textContent += "（時間已依台北線上時間校正）";
+    }
+  }
+
+  lanternGrid.innerHTML = "";
+  lanterns.forEach((lantern, index) => {
+    const lanternId = String(index + 1);
+    const isToday = isLanternToday(lantern, todayString);
+    const isPast = isLanternPast(lantern, todayString);
+    const isLit = litLanterns.has(lanternId);
+    const isMissed = isPast && !isLit;
+    const canOpen = isLit || isToday;
+    const button = document.createElement("button");
+    button.className = "daily-lantern";
+    button.type = "button";
+    button.disabled = !canOpen;
+    button.classList.toggle("is-available", isToday && !isLit);
+    button.classList.toggle("is-lit", isLit);
+    button.classList.toggle("is-missed", isMissed);
+    button.setAttribute("aria-pressed", String(isLit));
+    button.innerHTML = `
+      <span class="daily-lantern-icon" aria-hidden="true"></span>
+      <span class="daily-lantern-date">${formatLanternDate(lantern.date)}</span>
+      <span class="daily-lantern-title">${lantern.title}</span>
+      <span class="daily-lantern-name">${lantern.name}</span>
+      <span class="daily-lantern-action">${isLit ? "已點亮" : isToday ? "點亮天燈" : isMissed ? "已錯過" : "尚未開放"}</span>
+    `;
+
+    button.addEventListener("click", (event) => {
+      if (!canOpen) return;
+      if (!isLit && isToday && event.isTrusted) {
+        litLanterns.add(lanternId);
+        saveLitLanterns(litLanterns);
+        renderDailyLanterns();
+      }
+      openLanternDialog(lantern);
+    });
+
+    lanternGrid.append(button);
+  });
+}
+
+renderDailyLanterns();
+syncTaipeiDateFromServer();
+
+lanternDialog?.querySelector(".lantern-dialog-close")?.addEventListener("click", closeLanternDialog);
+lanternDialog?.querySelector(".lantern-dialog-backdrop")?.addEventListener("click", closeLanternDialog);
+lanternDialogDownload?.addEventListener("click", downloadLanternImage);
 
 const characterGrid = document.querySelector(".character-grid");
 const characterCards = document.querySelectorAll(".character-card");
@@ -664,6 +862,7 @@ dialog?.querySelector(".dialog-backdrop").addEventListener("click", closeDialog)
 
 document.addEventListener("keydown", (event) => {
   if (event.key !== "Escape") return;
+  if (lanternDialog && !lanternDialog.hidden) closeLanternDialog();
   if (rewardDialog && !rewardDialog.hidden) closeRewardDialog();
   if (dialog && !dialog.hidden) closeDialog();
 });
